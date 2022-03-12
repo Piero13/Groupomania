@@ -1,0 +1,29 @@
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const app = express();
+
+// Routes
+const usersRoutes = require('./routes/users');
+const publicationsRoutes = require('./routes/publications');
+
+app.use(express.json());
+app.use(cors());
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+});
+
+app.use(express.urlencoded({extended: true}));
+
+// Définition des accès principaux
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/api/users', usersRoutes);
+app.use('/api/publications', publicationsRoutes);
+
+module.exports = app;
