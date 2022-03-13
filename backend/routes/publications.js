@@ -7,9 +7,9 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
 // Routes publications
-router.post('/add', auth, multer, publicationsCtrl.createPublication);
-router.put('/:id', auth, multer, publicationsCtrl.updatePublication);
-router.delete('/:id', auth, publicationsCtrl.deletePublication);
+router.post('/', auth, multer, publicationsCtrl.createPublication);
+router.put('/update/:id', auth, multer, publicationsCtrl.updatePublication);
+router.delete('/delete/:id', auth, publicationsCtrl.deletePublication);
 router.get('/all', auth, publicationsCtrl.getAllPublications);
 router.get('/:id', auth, publicationsCtrl.getPublication);
 router.post('/:id/like', auth, publicationsCtrl.likes);
