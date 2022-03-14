@@ -8,6 +8,7 @@ const app = express();
 // Routes
 const usersRoutes = require('./routes/users');
 const publicationsRoutes = require('./routes/publications');
+const commentsRoutes = require('./routes/comments')
 
 app.use(express.json());
 app.use(cors());
@@ -27,5 +28,6 @@ app.use(express.urlencoded({extended: true}));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/users', usersRoutes);
 app.use('/api/publications', publicationsRoutes);
+app.use('/api/comments', commentsRoutes);
 
 module.exports = app;
