@@ -32,10 +32,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0
         }
     },
-    {
-        timestamps: false,
-        tableName: "users"
-    });
+        {
+            timestamps: false,
+            tableName: "users"
+        }
+    );
 
     User.associate = function (models) {
         models.User.hasMany(models.Publication, {
@@ -46,4 +47,4 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     return User;
-}
+};

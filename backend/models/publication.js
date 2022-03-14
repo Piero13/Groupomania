@@ -33,10 +33,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0
         }
     },
-    {
-        timestamps: false,
-        tableName: 'publications'
-    });
+        {
+            timestamps: false,
+            tableName: 'publications'
+        }
+    );
 
     Publication.associate = function (models) {
         models.Publication.belongsTo(models.User, {
@@ -51,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         });
         models.Publication.hasMany(models.Comment, {
             foreignKey: 'publicationId'
-        })
+        });
     };
 
-    return Publication
+    return Publication;
 };
