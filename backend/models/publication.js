@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         imageUrl: {
             type: DataTypes.STRING
         },
+        date: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
         likes: {
             type: DataTypes.INTEGER,
             allowNull: false,
