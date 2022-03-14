@@ -1,0 +1,23 @@
+{
+    "development": {
+        "username": "DarkVador",
+        "password": "#Je_suis_ton_pere",
+        "database": "Groupomania",
+        "host": "127.0.01",
+        "dialect": "mysql"
+    },
+    "test": {
+        "username": "DarkVador",
+        "password": "#Je_suis_ton_pere",
+        "database": "Groupomania",
+        "host": "127.0.01",
+        "dialect": "mysql"
+    },
+    "production": {
+        "username": "DarkVador",
+        "password": "#Je_suis_ton_pere",
+        "database": "Groupomania",
+        "host": "127.0.01",
+        "dialect": "mysql"
+    }
+}

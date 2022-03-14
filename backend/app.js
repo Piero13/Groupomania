@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet')
 const app = express();
 
 // Routes
@@ -10,6 +11,7 @@ const publicationsRoutes = require('./routes/publications');
 
 app.use(express.json());
 app.use(cors());
+app.use(helmet())
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
