@@ -1,14 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNull: false
         },
         lastname: {
-        type: DataTypes.STRING,
-        allowNull: false
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        firstname: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
         imageUrl: {
             type: DataTypes.STRING,
@@ -45,6 +49,10 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
     };
+
+    User.addScope('noPassword', {
+        attributes: { exclude: ['password'] }
+    });
 
     return User;
 };
