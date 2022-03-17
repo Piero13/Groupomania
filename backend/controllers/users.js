@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { User } = require('../models');
+const { User } = require("../models");
 const fs = require('fs');
-const { error } = require('console');
 
 // Fonction création utilisateur
-exports.signup = (req, res, next) => {
+exports.signup = (req, res) => {
     // Salage du mot de passe
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -25,7 +24,7 @@ exports.signup = (req, res, next) => {
 };
 
 // Fonction connexion utilisateur
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
     User.findOne({ where: { email: req.body.email } })
         .then(user => {
             // Si l'utilisateur n'existe pas on renvoie un message d'erreur
@@ -54,8 +53,8 @@ exports.login = (req, res, next) => {
 };
 
 // Fonction modification utilisateur
-exports.updateUser = (req, res, next) => {
-    User.findOne({ where: { id: req.body.id } })
+exports.updateUser = (req, res) => {
+    User.findOne({ where: { id: req.params.id } })
         .then(user => {
 
             // Si le mot de passe est modifié
@@ -70,7 +69,7 @@ exports.updateUser = (req, res, next) => {
                                 .then(newHash => {
                                     User.update(
                                         { password: newHash },
-                                        { where: { id: req.body.id } }
+                                        { where: { id: req.params.id } }
                                     );
                                     res.status(201).json({ message: 'Mot de passe changé'})
                                 })
@@ -93,7 +92,7 @@ exports.updateUser = (req, res, next) => {
                 const newImage = {
                     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
                 };
-                User.update(newImage, { where: { id: req.body.id}})
+                User.update(newImage, { where: { id: req.params.id}})
                     .then(() => res.status(201).json({ message: 'Image modifiée' }))
                     .catch(error => res.status(500).json({ error }));
             };
@@ -118,7 +117,7 @@ exports.updateUser = (req, res, next) => {
 };
 
 // Fonction suppression utilisateur
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = (req, res) => {
     User.findOne({ where: { id: req.params.id } })
         .then(user => {
             const filename = user.imageUrl.split('/images/')[1];
@@ -140,7 +139,7 @@ exports.deleteUser = (req, res, next) => {
 
 
 // Fonction récupération de tous les utilisateurs
-exports.getAllUsers = (req, res, next) => {
+exports.getAllUsers = (req, res) => {
     // Les mots de passe utilisateurs ne sont pas enregistrés dans la réponse
     User.scope('noPassword').find()
         .then(user => res.status(200).json(user))
@@ -149,9 +148,9 @@ exports.getAllUsers = (req, res, next) => {
 
 
 // Fonction récupération d'un seul utilisateur
-exports.getUser = (req, res, next) => {
+exports.getUser = (req, res) => {
     // Le mot de passe utilisateur n'est pas enregistré dans la réponse
-    User.scope('noPassword').findOne({ where: { id: req.body.id } })
+    User.scope('noPassword').findOne({ where: { id: req.params.id } })
         .then(user => res.status(200).json(user))
         .catch(error => res.status(500).json({ error }))
 };

@@ -10,14 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         imageUrl: {
             type: DataTypes.STRING
         },
-        date: {
+        publicationDate: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW
@@ -42,10 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     Publication.associate = function (models) {
         models.Publication.belongsTo(models.User, {
             onDelete: "cascade",
-            foreignKey: {
-                name: 'userId',
-                allowNull: false
-            }
+            foreignKey: { name: 'userId', allowNull: false }
         });
         models.Publication.hasMany(models.Like, {
             foreignKey: 'publicationId'
@@ -54,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'publicationId'
         });
     };
+
+    Publication.addScope('formatted_date', {
+        attributes: { include : [[sequelize.fn('date_format', sequelize.col('date_publication'), '%Y-%m-%d %H:%i'), 'formatted_date']]}
+    });
 
     return Publication;
 };

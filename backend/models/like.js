@@ -38,6 +38,14 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'publicationId',
             otherKey: 'userId'
         });
+        models.Like.belongsTo(models.User, {
+            foreignKey: 'userId',
+            as: 'user'
+        });
+        models.Like.belongsTo(models.Publication, {
+            foreignKey: 'publicationId',
+            as: 'publication'
+        })
     };
 
     return Like;

@@ -8,8 +8,7 @@ const multer = require('../middleware/multer-config');
 // Routes publications
 router.post('/', auth, multer, publicationsCtrl.createPublication);
 router.delete('/delete/:id', auth, publicationsCtrl.deletePublication);
-router.get('/', auth, publicationsCtrl.getAllPublications);
-router.get('/:id', auth, publicationsCtrl.getPublication);
-router.post('/like', auth, publicationsCtrl.likes);
+router.get('/:id', auth, publicationsCtrl.getAllPublications);
+router.post('/like', auth, publicationsCtrl.publicationLike);
 
 module.exports = router;
