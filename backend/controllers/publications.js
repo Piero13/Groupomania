@@ -12,6 +12,7 @@ exports.createPublication = (req, res) => {
     // Création de l'objet publication
     const newPublication = {
         userId: req.body.userId,
+        content: req.body.content,
         imageUrl: publicationImage
     };
     // Création de la publication

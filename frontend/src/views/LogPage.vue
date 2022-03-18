@@ -16,12 +16,12 @@
         <div v-if="loginWindow" class="main__form">
             <div class="form">
                 <div>
-                    <label for="user-id">Identifiant</label>
-                    <input id="user-id" type="email" placeholder="Email" aria-label="email">
+                    <label for="email">Identifiant</label>
+                    <input id="email" type="email" name="email" placeholder="Email" aria-label="email">
                 </div>
                 <div>
-                    <label for="user-pw">Mot de passe</label>
-                    <input id="user-pw" type="password" placeholder="Mot de passe" aria-label="mot de passe">
+                    <label for="password">Mot de passe</label>
+                    <input id="password" type="password" name="password" placeholder="Mot de passe" aria-label="mot de passe">
                 </div>
             </div>
             
@@ -31,34 +31,37 @@
         </div>
 
         <div v-if="signupWindow" class="main__form">
-            <div class="form">
-                <div>
-                    <label for="lastName">Nom</label>
-                    <input id="lastName" type="text" placeholder="Nom" aria-label="nom">
-                </div>
+            <form method="post" @submit.prevent="signup()">
+                <div class="form">
+                    <div>
+                        <label for="lastname">Nom</label>
+                        <input id="lastname" type="text" name="lastname" placeholder="Nom" aria-label="nom">
+                    </div>
 
-                <div>
-                    <label for="firstName">Prénom</label>
-                    <input id="firstName" type="text" placeholder="Prénom" aria-label="prénom">
-                </div>
+                    <div>
+                        <label for="firstname">Prénom</label>
+                        <input id="firstname" type="text" name="firstname" placeholder="Prénom" aria-label="prénom">
+                    </div>
 
-                <div>
-                    <label for="user-id">Email</label>
-                    <input id="user-id" type="email" placeholder="Email" aria-label="email">
-                </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input id="email" type="email" name="email" placeholder="Email" aria-label="email">
+                    </div>
 
-                <div>
-                    <label for="user-pw">Mot de passe</label>
-                    <input id="user-pw" type="password" placeholder="Mot de passe" aria-label="mot de passe">
-                </div>
+                    <div>
+                        <label for="password">Mot de passe</label>
+                        <input id="password" type="password" name="password" placeholder="Mot de passe" aria-label="mot de passe">
+                    </div>
 
-                <div>
-                    <label for="user-pw-confirm">Confirmation mot de passe</label>
-                    <input id="user-pw-confirm" type="password" placeholder="Mot de passe" aria-label="confirmation mot de passe">
+                    <div>
+                        <label for="passwordConfirm">Confirmation mot de passe</label>
+                        <input id="passwordConfirm" type="password" name="password" placeholder="Mot de passe" aria-label="confirmation mot de passe">
+                    </div>
                 </div>
-            </div>
             
-            <button @click="signup()" class="form__btn">S'inscrire</button>
+                <button type="submit" class="form__btn">S'inscrire</button>
+
+            </form>
 
             <p>Déjà inscrit? <span><a href="#" @click="loginWindow = true; signupWindow = false">Se connecter</a></span></p>
         </div>
@@ -78,21 +81,25 @@ export default {
         return {
             loginWindow: true,
             signupWindow: false,
-            lastName: "",
-            firstName: "",
-            email: "",
-            password: "",
-            passwordConfirm: ""
+            validPassword: false,
+            lastname: null,
+            firstname: null,
+            email: null,
+            password: null,
+            passwordConfirm: null
         }
     },
+
     components: {
         PageFooter
     },
+
     methods: {
-        login: function() {
+        login() {
             this.$router.push("/home")
         },
-        signup: function() {
+
+        signup() {
             this.$router.push("/profile")
         }
     }
@@ -154,6 +161,12 @@ export default {
         border-radius: 10px;
         box-shadow: 5px 5px 10px #122442;
         font-size: 18px;
+
+        & form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     }
 
 }

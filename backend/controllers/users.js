@@ -97,7 +97,7 @@ exports.updateUser = (req, res) => {
                     .catch(error => res.status(500).json({ error }));
             };
 
-            // Si le nom ou le prénom utilisateurest modifié
+            // Si le nom, le prénom ou la description utilisateur est modifié
             if(req.body.lastname && req.body.lastname != user.lastname) {
                 User.update(
                     { lastname: req.body.lastname},
@@ -105,12 +105,18 @@ exports.updateUser = (req, res) => {
                 );
                 res.status(201).json({ message: 'Nom utilisateur modifié'})
             };
-            if(req.body.firstname && req.body.lastname != user.firstname) {
+            if(req.body.firstname && req.body.firstname != user.firstname) {
                 User.update(
                     { firstname: req.body.firstname},
                     { where: { id: req.params.id } }
                 );
                 res.status(201).json({ message: 'Prénom utilisateur modifié'})
+            };
+            if(req.body.description && req.body.description != user.description) {
+                User.update(
+                    { description: req.body.description },
+                    { where: { id: req.params.id } }
+                );
             };
         })
         .catch(error => res.status(500).json({ error }));
