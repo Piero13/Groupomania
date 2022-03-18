@@ -27,6 +27,7 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     User.findOne({ where: { email: req.body.email } })
         .then(user => {
+            console.log(user)
             // Si l'utilisateur n'existe pas on renvoie un message d'erreur
             if(!user) {
                 return res.status(401).json({ error: 'Utilisateur inexistant' });

@@ -51,14 +51,26 @@
 
 <script>
 
-import PageHeader from "../components/PageHeader.vue"
-import PageFooter from "../components/PageFooter.vue"
+import PageHeader from "../components/PageHeader.vue";
+import PageFooter from "../components/PageFooter.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     data() {
         return {
-            showModifPassword: false
+            showModifPassword: false,
+            oldPassword: null,
+            newPassword: null,
+            lastname: null,
+            firstname: null,
+            description: null
         }
+    },
+    computed: {
+        ...mapGetters({ user: "showConnectedUser "})
+    },
+    methods: {
+        ...mapActions([ "getOneUser "])
     },
     components: {
         PageHeader,
