@@ -10,7 +10,7 @@ export default createStore({
   },
   
   getters: {
-    showConnectedUser: (state) => state.connectedUser
+    showConnectedUser: (state) => {return state.connectedUser}
   },
 
   mutations: {
@@ -24,7 +24,7 @@ export default createStore({
     },
 
     getOneUser({ commit }) {
-      axios.post('user', { id: this.state.userId })
+      axios.get('/user/' + this.state.userId)
         .then(res => {
           commit('setConnectedUser', res.data)
         })

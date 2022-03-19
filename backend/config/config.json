@@ -3,21 +3,21 @@
         "username": "root",
         "password": "Ange18_Alexis09_#",
         "database": "Groupomania",
-        "host": "127.0.0.1",
+        "host": "localhost",
         "dialect": "mysql"
     },
     "test": {
         "username": "root",
         "password": "Ange18_Alexis09_#",
         "database": "Groupomania",
-        "host": "127.0.0.1",
+        "host": "localhost",
         "dialect": "mysql"
     },
     "production": {
         "username": "root",
         "password": "Ange18_Alexis09_#",
         "database": "Groupomania",
-        "host": "127.0.0.1",
+        "host": "localhost",
         "dialect": "mysql"
     }
 }

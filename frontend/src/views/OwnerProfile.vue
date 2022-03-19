@@ -6,40 +6,45 @@
     <main id="main" class="main">
         <div class="profile">
             <div class="profile__image">
-                <img src="../assets/image_profil_default.jpg" alt="">
+                <img :src="userProfile.imageUrl" alt="Photo de profil">
             </div>
 
             <div class="profile__modif">
-                <button class="form__btn profile__btn">Modifier Image du profil</button>
-
                 <button @click="showModifPassword = true" class="form__btn profile__btn">Modifier Mot de passe</button>
             </div>
 
             <div class="profile__infos">
-                <div class="pi__user">
-                    <input type="text" placeholder="Nom" aria-label="Nom" class="pi__user__lastname">
+                <form @submit.prevent="updateUser()">
+                    <div class="pi__user">
+                        <input type="text" placeholder="Nom" aria-label="Nom" class="pi__user__lastname">
 
-                    <input type="text" placeholder="Prénom" aria-label="Prénom" class="pi__user__firstname">
+                        <input type="text" placeholder="Prénom" aria-label="Prénom" class="pi__user__firstname">
 
-                    <textarea type="text" placeholder="Description" aria-label="Description" class="pi__user__description"></textarea>
-                </div>
+                        <textarea type="text" placeholder="Description" aria-label="Description" class="pi__user__description"></textarea>
+                    </div>
 
-                <div v-if="showModifPassword" class="pi__password">
-                    <button @click="showModifPassword = false">X</button>
+                    <div class="pi__image">
+                        <label for="modify-image"> Modifier l'image</label>
+                        <input type="file" name="modify-image" id="modify-image" accept=".png, .jpg, .jpeg" aria-label="Modifier l'image de profil"/>
+                    </div>
 
-                    <label for="pi__password__old">Ancien mot de passe</label>
-                    <input type="password" placeholder="Ancien mot de passe" id="pi__password__old">
+                    <div v-if="showModifPassword" class="pi__password">
+                        <button @click="showModifPassword = false">X</button>
 
-                    <label for="pi__password__new">Nouveau mot de passe</label>
-                    <input type="password" placeholder="Nouveau mot de passe" id="pi__password__new">
+                        <label for="pi__password__old">Ancien mot de passe</label>
+                        <input type="password" placeholder="Ancien mot de passe" id="pi__password__old">
 
-                    <label for="pi__password__confirm">Confirmer mot de passe</label>
-                    <input type="password" placeholder="Confirmer mot de passe" id="pi__password__old">
-                </div>
+                        <label for="pi__password__new">Nouveau mot de passe</label>
+                        <input type="password" placeholder="Nouveau mot de passe" id="pi__password__new">
 
-                <div class="pi__save">
-                    <button class="form__btn profile__btn">Enregistrer</button>
-                </div>
+                        <label for="pi__password__confirm">Confirmer mot de passe</label>
+                        <input type="password" placeholder="Confirmer mot de passe" id="pi__password__old">
+                    </div>
+
+                    <div class="pi__save">
+                        <button type="submit" class="form__btn profile__btn">Enregistrer</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
@@ -54,6 +59,7 @@
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
 import { mapActions, mapGetters } from "vuex";
+import axios from 'axios';
 
 export default {
     data() {
@@ -63,19 +69,39 @@ export default {
             newPassword: null,
             lastname: null,
             firstname: null,
-            description: null
+            description: null,
+            userProfile: []
         }
     },
+    
+    mounted() {
+        axios.get('/users/' + this.$store.state.userId)
+            .then(res => {
+                this.userProfile = res.data
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    },
+
     computed: {
-        ...mapGetters({ user: "showConnectedUser "})
+        ...mapGetters({user: "showConnectedUser"}),
     },
+
     methods: {
-        ...mapActions([ "getOneUser "])
+        ...mapActions(["getOneUser"]),
+
+        updateUser() {
+
+        }
     },
+
     components: {
         PageHeader,
         PageFooter
-    }
+    },
+
+    
 }
 </script>
 
@@ -114,7 +140,7 @@ export default {
         margin: 0 20px;
 
         & button {
-            margin: 0 0 20px 0;
+            margin-top: 0;
         }
     }
 
@@ -141,6 +167,26 @@ export default {
                 }
             }
 
+            &__image {
+                overflow: hidden;
+                border: 2px inset grey;
+                margin-bottom: 20px;
+                padding: 5px;
+                border-radius: 10px;
+                background-color: white;
+
+                & label {
+                    font-style: normal;
+                    color: grey;
+                }
+
+                & input {
+                    margin: 5px 0;
+                    padding: 0;
+                    border-radius: 0;
+                }
+            }
+
             &__password {
                 display: flex;
                 flex-direction: column;
@@ -162,7 +208,6 @@ export default {
                 display: flex;
                 justify-content: flex-end;
                 align-items: flex-end;
-                height: 100%;
 
                 & button {
                     margin: 0;
