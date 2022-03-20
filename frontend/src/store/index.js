@@ -6,16 +6,20 @@ export default createStore({
   state: {
     errorMsg: null,
     userId: localStorage.getItem('user'),
-    connectedUser: null
+    connectedUser: null,
+    publications: null,
+    likes: null
   },
   
   getters: {
-    showConnectedUser: (state) => {return state.connectedUser}
+    showConnectedUser: (state) => {return state.connectedUser},
+    showPublications: (state) => state.publications
   },
 
   mutations: {
     setUserId: (state, userId) => (state.userId = userId),
-    setConnectedUser: (state, user) => (state.connectedUser = user)
+    setConnectedUser: (state, user) => (state.connectedUser = user),
+    setPublications: (state, publications) => (state.publications = publications)
   },
 
   actions: {
