@@ -53,9 +53,36 @@ exports.login = (req, res) => {
         .catch(error => res.status(500).json({error}));
 };
 
+// Fonction modification image utilisateur
+exports.updateImage = (req, res) => {
+    User.findOne({ where: { id: req.body.userId } })
+        .then(user => {
+            // Si l'image de profil est modifiée
+            if(req.file) {
+                const filename = user.imageUrl.split('/images/')[1];
+                // Si l'ancienne image est différente de l'image par défaut elle est supprimée
+                if(filename != "image_profil_default.jpg") {
+                    fs.unlink(`images/${filename}`, (err) => {
+                        if(err) throw err;
+                    });
+                }
+                // On ajoute la nouvelle image et on met à jour la DB
+                const newImage = {
+                    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                };
+                User.update(
+                        newImage, { where: { id: req.body.userId}}
+                    )
+                    .then(() => res.status(201).json({ message: 'Image modifiée' }))
+                    .catch(error => res.status(500).json({ error }));
+            };
+        })
+        .catch(error => res.status(500).json({ error }));
+}
+
 // Fonction modification utilisateur
 exports.updateUser = (req, res) => {
-    User.findOne({ where: { id: req.params.id } })
+    User.findOne({ where: { id: req.body.userId } })
         .then(user => {
 
             // Si le mot de passe est modifié
@@ -70,7 +97,7 @@ exports.updateUser = (req, res) => {
                                 .then(newHash => {
                                     User.update(
                                         { password: newHash },
-                                        { where: { id: req.params.id } }
+                                        { where: { id: req.body.userId } }
                                     );
                                     res.status(201).json({ message: 'Mot de passe changé'})
                                 })
@@ -80,43 +107,25 @@ exports.updateUser = (req, res) => {
                     .catch(error => res.status(500).json({ error }))
             }
 
-            // Si l'image de profil est modifiée
-            if(req.file) {
-                const filename = user.imageUrl.split('/images/')[1];
-                // Si l'ancienne image est différente de l'image par défaut elle est supprimée
-                if(filename != "image_profil_default.jpg") {
-                    fs.unlink(`images/${filename}`, (err) => {
-                        if(err) throw err;
-                    });
-                }
-                // On ajoute la nouvelle image et on met à jour la DB
-                const newImage = {
-                    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-                };
-                User.update(newImage, { where: { id: req.params.id}})
-                    .then(() => res.status(201).json({ message: 'Image modifiée' }))
-                    .catch(error => res.status(500).json({ error }));
-            };
-
             // Si le nom, le prénom ou la description utilisateur est modifié
             if(req.body.lastname && req.body.lastname != user.lastname) {
                 User.update(
                     { lastname: req.body.lastname},
-                    { where: { id: req.params.id } }
+                    { where: { id: req.body.userId } }
                 );
                 res.status(201).json({ message: 'Nom utilisateur modifié'})
             };
             if(req.body.firstname && req.body.firstname != user.firstname) {
                 User.update(
                     { firstname: req.body.firstname},
-                    { where: { id: req.params.id } }
+                    { where: { id: req.body.userId } }
                 );
                 res.status(201).json({ message: 'Prénom utilisateur modifié'})
             };
             if(req.body.description && req.body.description != user.description) {
                 User.update(
                     { description: req.body.description },
-                    { where: { id: req.params.id } }
+                    { where: { id: req.body.userId } }
                 );
             };
         })
@@ -157,7 +166,7 @@ exports.getAllUsers = (req, res) => {
 // Fonction récupération d'un seul utilisateur
 exports.getUser = (req, res) => {
     // Le mot de passe utilisateur n'est pas enregistré dans la réponse
-    User.scope('noPassword').findOne({ where: { id: req.params.id } })
+    User.findOne({ where: { id: req.params.id } })
         .then(user => res.status(200).json(user))
         .catch(error => res.status(500).json({ error }))
 };

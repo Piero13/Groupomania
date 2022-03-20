@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         imageUrl: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'http://localhost:3000/images/image_profil_defaut.jpg'
+            defaultValue: 'http://localhost:3000/images/image_profil_default.jpg'
         },
         email: {
             type: DataTypes.STRING,
