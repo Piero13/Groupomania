@@ -4,18 +4,21 @@
     <PageHeader/>
 
     <main id="main" class="main">
-        <h1 class="title"></h1>
 
         <section class="publish">
-            <img v-if="publishImage" src="" alt="nouvelle image" class="publish__newImage">
+            <form @submit.prevent="createPublication()">
+                <div class="publish__preview" v-if="imagePreview">
+                    <img :src="imagePreview" alt="Apperçu de l'image" class="publish__newImage">
+                </div>
 
-            <div class="publish__form">
-                <textarea type="text" placeholder="Nouvelle publication..." aria-label="texte de la publication" class="publish__input"></textarea>
-                
-                <a href="#"><i class="fas fa-photo-video"></i>Ajouter un média</a>
-            </div>
+                <div class="publish__form">
+                    <textarea type="text" placeholder="Nouvelle publication..." aria-label="texte de la publication" v-model="content" class="publish__input" required></textarea>
+                    
+                    <input type="file" name="image" accept=".png, .jpg, .jpeg, .gif" id="image-input" @change="uploadImage()">
+                </div>
 
-            <button class="form__btn">Publier</button>
+                <button type="submit" class="form__btn">Publier</button>
+            </form>
         </section>
 
         <PublicationBloc/>
@@ -28,6 +31,7 @@
 
 <script>
 
+import axios from "axios";
 import PageHeader from "../components/PageHeader.vue"
 import PageFooter from "../components/PageFooter.vue"
 import PublicationBloc from "../components/PublicationBloc.vue"
@@ -35,13 +39,55 @@ import PublicationBloc from "../components/PublicationBloc.vue"
 export default {
     data() {
         return {
-            publishImage: false
+            imagePreview: null,
+            imageFile: null,
+            content: null
         }
     },
     components: {
         PageHeader,
         PageFooter,
         PublicationBloc
+    },
+    methods: {
+        uploadImage() {
+            let inputFile = document.querySelector("#image-input");
+
+            this.imageFile = inputFile.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.imagePreview = reader.result;
+            };
+            reader.readAsDataURL(this.imageFile);
+            console.log(this.imagePreview)
+            console.log(this.imageFile)
+        },
+
+        createPublication() {
+            const formData = new FormData();
+            if(!this.imageFile && !this.content) {
+                return
+            } else {
+                formData.append("userId", this.$store.state.userId);
+                formData.append("content", this.content);
+                // Si la publication conitent une image
+                if(this.imageFile) {
+                    formData.append("image", this.imageFile);
+                }
+
+                console.log(formData)
+                // On envoie la requete
+                axios.post("/publications/", formData, {
+                    headers: {"Content-Type": "multipart/form-data"}
+                })
+                    .then(() => {
+                        location.reload();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }
     }
 }
 </script>
@@ -67,29 +113,43 @@ export default {
     border-radius: 10px;
     box-shadow: 5px 5px 10px #122442;
 
-    &__newImage {
+    & form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    &__preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        width: 40%;
+        height: max-content;
         margin-bottom: 20px;
+        border: 2px solid #122442;
+        border-radius: 10px;
+        box-shadow: 5px 5px 10px #122442;
+
+        & img {
+            width: 100%;
+        }
     }
 
     &__form {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: space-between;
-        align-items: center;
         width: 100%;
         margin-bottom: 20px;
-
-        & a {
-            font-size: 16px;
-        }
-
-        & i {
-            margin-right: 10px;
-        }
     }
 
     &__input {
-        width: 80%;
-        margin-right: 20px;
+        width: 100%;
+        height: 76px;
+        margin-bottom: 10px;
     }
 }
 
