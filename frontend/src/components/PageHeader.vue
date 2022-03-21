@@ -4,7 +4,7 @@
     <h1 class="header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="header__logo"></h1>
     
     <nav class="header__nav">
-        <p><img src="../assets/image_profil_default.jpg" alt="photo de profil"></p>
+        <div class="header__nav__image"><img :src="this.user.imageUrl" alt="photo de profil"></div>
 
         <button @click="ownerProfile()" class="header__nav__profile header__btn">
             Mon profil
@@ -23,8 +23,28 @@
 </template>
 
 <script>
+
+import axios from "axios"
+
 export default {
     name: 'PageHeader',
+
+    data() {
+        return {
+            user: [],
+        }
+    },
+
+    mounted() {
+        axios.get('/users/' + this.$store.state.userId)
+            .then(res => {
+                this.user = res.data;
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    },
+
     methods: {
         ownerProfile() {
             this.$router.push("/profile")
@@ -64,7 +84,10 @@ export default {
         display: flex;
         align-items: center;
 
-        & p {
+        &__image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
             width: 50px;
             height: 50px;
