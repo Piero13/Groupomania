@@ -1,57 +1,130 @@
 <template>
-    <section class="publication">
-        <div class="publication__image">
-            <img src="../assets/humour_dev.png" alt="image de démo">
-        </div>
+    <section>
+        <article class="publication" v-for="publication in this.publications" :key="publication.id">
+            <div class="publication__image" v-if="publication.imageUrl">
+                <img :src="publication.imageUrl" alt="image de démo">
+                <button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.admin == true)"><i class="far fa-trash-alt"></i></button>
+            </div>
 
-        <div class="publication__owner">
-            <div class="po__infos">
-                <div class="po__infos__profile">
-                    <p class="po__infos__image"><img src="../assets/image_profil_default.jpg" alt="photo de profil"></p>
-                    <a href="#">Pierre Fasce</a>
+            <div class="publication__owner">
+                <div class="po__infos">
+                    <div class="po__infos__profile">
+                        <p class="po__infos__image"><img :src="publication.User.imageUrl" alt="photo de profil"></p>
+                        <a href="#">{{ publication.User.firstname }} {{ publication.User.lastname }}</a>
+                    </div>
+
+                    <div class="po__infos__likes">
+                        <p><i class="far fa-thumbs-up like" @click="likePublication(publication.id, 1)"></i>{{ publication.likes }}</p>  
+                        <p><i class="far fa-thumbs-down dislike" @click="likePublication(publication.id, -1)"></i>{{ publication.dislikes }}</p>
+                    </div>
                 </div>
 
-                <div class="po__infos__likes">
-                    <p><i class="far fa-thumbs-up"></i>0</p>  
-                    <p><i class="far fa-thumbs-down"></i>0</p>
+                <div class="po__post">
+                    <p class="po__post__text"> {{ publication.content }}</p>
                 </div>
             </div>
 
-            <div class="po__post">
-                <p class="po__post__text">Tout développeur qui se respecte connaît ce sentiment</p>
-            </div>
-        </div>
-
-        <div class="publication__comments">
-            <div class="publication__comments__new">
-                <input type="text" name="new__comment" id="new__comment__input" placeholder="Commenter..." aria-label="Commenter la publication">
-                <i class="fas fa-paper-plane"></i>
-            </div>
-
-            <div class="publication__comments__user">
-                <div class="pcu__infos">
-                    <p class="pcu__infos__image"><img src="../assets/image_profil_default.jpg" alt="photo de profil"></p>
-                    <a href="#">Jean Bond</a>
+            <div class="publication__comments">
+                <div class="publication__comments__new">
+                    <form @submit.prevent="createComment(publication.id)">
+                        <textarea type="text" id="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
                 </div>
-                <p>C'est tout à fait ça mdr!</p>
+
+                <div class="publication__comments__user" v-for="comment in publication.Comments" :key="comment.id">
+                    <div class="pcu__infos">
+                        <p class="pcu__infos__image"><img :src="comment.User.imageUrl" alt="photo de profil"></p>
+                        <a href="#">{{ comment.User.firstname }} {{ comment.User.lastname }}</a>
+                        <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.admin == true)"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                    <p>{{ comment.content}}</p>
+                </div>
             </div>
-        </div>
+        </article>
     </section>
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
+import axios from 'axios'
+
 export default {
-    name: 'PublicationBloc'
+    name: 'PublicationBloc',
+
+    Data() {
+        return {
+            publications: [],
+            comments: [],
+            commentContent: null
+        }
+    },
+    
+    computed: {
+        ...mapState({
+            publications: ["publications"]
+        })
+    },
+
+    methods: {
+        ...mapActions(["getPublications"]),
+
+        likePublication(publicationId, likeValue) {
+            axios.post("/publications/like", {
+                publicationId: publicationId,
+                userId: parseInt(this.$store.state.userId),
+                likeValue: likeValue
+            })
+                .then(() => {
+                    this.$store.dispatch("getPublications");
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        },
+
+        createComment(publicationId) {
+            axios.post("/comments", {
+                publicationId: publicationId,
+                userId: parseInt(this.$store.state.userId),
+                content: this.commentContent
+            })
+                .then(() => {
+                    this.$store.dispatch("getPublications");
+                    this.commentContent = null;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    },
+
+    mounted() {
+        this.getPublications();
+        this.$store.dispatch("getOneUser");
+        this.commentContent = null;
+        console.log(this.publications)
+    },
+
+    
 }
 </script>
 
 <style lang="scss">
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
 .publication {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
+    overflow: hidden;
+    width: 60%;
     margin-bottom: 40px;
     background: linear-gradient(to top left, #ffffffbb, #b3daeebb);
     border: 2px solid #122442;
@@ -62,6 +135,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
         overflow: hidden;
         width: 100%;
 
@@ -81,14 +155,26 @@ export default {
             display: flex;
             align-items: center;
             padding: 0 20px;
-            & input {
+
+            & form {
+                display: flex;
                 width: 100%;
-                margin-right: 10px;
             }
 
-            & i:hover {
-                transform: scale(1.2);
-                color: #1148a8;
+            & textarea {
+                width: 100%;
+                margin: 0 10px 10px 0;
+            }
+
+            & button {
+                background: transparent;
+                border: none;
+                cursor: pointer;
+
+                &:hover{
+                    transform: scale(1.2);
+                    color: #1148a8;
+                }
             }
         }
 
@@ -139,6 +225,7 @@ export default {
 
             & i {
                 margin-right: 5px;
+                cursor: pointer;
                 &:hover {
                     transform: scale(1.2);
                     color: #1148a8;
@@ -155,6 +242,7 @@ export default {
 
 .pcu {
     &__infos {
+        position: relative;
         display: flex;
         align-items: center;
         width: 100%;
@@ -172,6 +260,32 @@ export default {
         & img {
             width: 100%;
         }
+    }
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1.2);
+    }
+}
+
+.delete-comment {
+    position: absolute;
+    right: 0;
+}
+
+.delete-publication {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px 10px 0 0;
+
+    & i {
+        color: #1148a8;
     }
 }
 

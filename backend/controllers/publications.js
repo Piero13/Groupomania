@@ -53,10 +53,11 @@ exports.getAllPublications = (req, res) => {
                 { model: User, attributes: ['firstname', 'lastname', 'imageUrl'] }
             ]}
         ],
+        
         // Les résulats sont classés par ordre décroissant des dates
         order: [
             ['publicationDate', 'DESC'],
-            [Comment, 'createdAt', 'DESC']
+            // [Comment, 'createdAt', 'DESC']
         ]
     })
         .then(publications => {

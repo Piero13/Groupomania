@@ -81,7 +81,7 @@ export default {
                     headers: {"Content-Type": "multipart/form-data"}
                 })
                     .then(() => {
-                        location.reload();
+                        this.$store.dispatch("getPublications");
                     })
                     .catch((error) => {
                         console.log(error);
@@ -105,7 +105,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
+    width: 60%;
     padding: 20px 20px;
     margin-bottom: 40px;
     background: linear-gradient(to top left, #ffffffbb, #b3daeebb);

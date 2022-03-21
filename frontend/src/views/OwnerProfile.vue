@@ -61,7 +61,6 @@
 
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
-import { mapActions } from "vuex";
 import axios from 'axios';
 
 export default {
@@ -85,7 +84,6 @@ export default {
                 this.lastname = this.userProfile.lastname;
                 this.firstname = this.userProfile.firstname;
                 this.description = this.userProfile.description;
-                console.log(this.userProfile);
             })
             .catch((err) => {
                 console.log(err)
@@ -97,8 +95,6 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getOneUser"]),
-
         returnHome() {
             this.$router.push("/home")
         },

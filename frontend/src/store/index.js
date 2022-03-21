@@ -7,42 +7,60 @@ export default createStore({
     errorMsg: null,
     userId: localStorage.getItem('user'),
     connectedUser: null,
-    publications: null,
+    publications: [],
     likes: null
   },
   
   getters: {
-    showConnectedUser: (state) => {return state.connectedUser},
-    showPublications: (state) => state.publications
+    showConnectedUser(state) {
+      state.connectedUser},
+    showPublications(state) {
+      state.publications}
   },
 
   mutations: {
-    setUserId: (state, userId) => (state.userId = userId),
-    setConnectedUser: (state, user) => (state.connectedUser = user),
-    setPublications: (state, publications) => (state.publications = publications)
+    SET_USER_ID(state, userId) {
+      state.userId = userId
+    },
+    SET_CONNECTED_USER(state, user) {
+      state.connectedUser = user
+    },
+    SET_PUBLICATIONS(state, publications) {
+      state.publications = publications
+    }
   },
 
   actions: {
     getUserId({ commit }, userId) {
-      commit('setUserId', userId);
+      commit('SET_USER_ID', userId);
     },
 
     getOneUser({ commit }) {
-      axios.get('/user/' + this.state.userId)
+      axios.get('/users/' + this.state.userId)
         .then(res => {
-          commit('setConnectedUser', res.data)
+          commit('SET_CONNECTED_USER', res.data)
         })
-        .catch((err) => {
-          console.log(err)
+        .catch((error) => {
+          console.log(error);
         })
     },
 
-    logout({ commit}) {
-      commit('setUserId', null);
-      commit('setConnectedUser', null);
+    logout({ commit }) {
+      commit('SET_USER_ID', null);
+      commit('SET_CONNECTED_USER', null);
       localStorage.clear();      
       router.push("/")
-    }
+    },
+
+    getPublications({ commit }) {
+      axios.get('/publications')
+        .then(res => {
+          commit("SET_PUBLICATIONS", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
   },
 
   modules: {

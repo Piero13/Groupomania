@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     Publication.addScope('formatted_date', {
-        attributes: { include : [[sequelize.fn('date_format', sequelize.col('date_publication'), '%Y-%m-%d %H:%i'), 'formatted_date']]}
+        attributes: { include : [[sequelize.fn('date_format', sequelize.col('publicationDate'), '%Y-%m-%d %H:%i'), 'formatted_date']]}
     });
 
     return Publication;
