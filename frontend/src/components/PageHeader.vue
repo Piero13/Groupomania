@@ -14,7 +14,7 @@
             Membres
         </button>
 
-        <button @click="$store.dispatch('logout')" class="header__nav_logout header__btn">
+        <button @click="logout()" class="header__nav_logout header__btn">
             Se déconnecter
         </button>
     </nav>
@@ -26,11 +26,14 @@
 export default {
     name: 'PageHeader',
     methods: {
-        ownerProfile() {
+        ownerProfile : function() {
             this.$router.push("/profile")
         },
-        userProfile() {
+        userProfile : function() {
             this.$router.push("/profile/:userId")
+        },
+        logout : function () {
+            this.$router.push("/")
         }
     }
 }

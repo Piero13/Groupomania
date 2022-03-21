@@ -14,60 +14,51 @@
     
     <main id="main" class="main">
         <div v-if="loginWindow" class="main__form">
-            <form method="post" @submit.prevent="login()">
-                <div class="form">
-                    <div>
-                        <label for="email">Identifiant</label>
-                        <input id="email" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
-                    </div>
-
-                    <div>
-                        <label for="password">Mot de passe</label>
-                        <input id="password" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
-                    </div>
-
-                    <p class="signup-error" v-if="this.$store.state.errorMsg != null">{{ this.$store.state.errorMsg }}</p>
+            <div class="form">
+                <div>
+                    <label for="user-id">Identifiant</label>
+                    <input id="user-id" type="email" placeholder="Email" aria-label="email">
                 </div>
+                <div>
+                    <label for="user-pw">Mot de passe</label>
+                    <input id="user-pw" type="password" placeholder="Mot de passe" aria-label="mot de passe">
+                </div>
+            </div>
             
-                <button type="submit" class="form__btn">Se connecter</button>
-            </form>
+            <button @click="login()" class="form__btn">Se connecter</button>
 
             <p>Pas encore inscrit? <span><a href="#" @click="loginWindow = false; signupWindow = true">S'inscrire</a></span></p>
         </div>
 
         <div v-if="signupWindow" class="main__form">
-            <form method="post" @submit.prevent="signup()">
-                <div class="form">
-                    <div>
-                        <label for="lastname">Nom</label>
-                        <input id="lastname" type="text" name="lastname" placeholder="Nom" v-model="lastname" aria-label="nom" required>
-                    </div>
-
-                    <div>
-                        <label for="firstname">Prénom</label>
-                        <input id="firstname" type="text" name="firstname" placeholder="Prénom" v-model="firstname" aria-label="prénom" required>
-                    </div>
-
-                    <div>
-                        <label for="email">Email</label>
-                        <input id="email" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
-                    </div>
-
-                    <div>
-                        <label for="password" id="pwLabel">Mot de passe</label>
-                        <input id="password" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
-                    </div>
-
-                    <div>
-                        <label for="passwordConfirm" id="pwConfirmLabel">Confirmation mot de passe</label>
-                        <input id="passwordConfirm" type="password" name="passwordConfirm" placeholder="Mot de passe" v-model="passwordConfirm" aria-label="confirmation mot de passe" required>
-                    </div>
-
-                    <p class="signup-error" v-if="this.$store.state.errorMsg != null">{{ this.$store.state.errorMsg }}</p>
+            <div class="form">
+                <div>
+                    <label for="lastName">Nom</label>
+                    <input id="lastName" type="text" placeholder="Nom" aria-label="nom">
                 </div>
+
+                <div>
+                    <label for="firstName">Prénom</label>
+                    <input id="firstName" type="text" placeholder="Prénom" aria-label="prénom">
+                </div>
+
+                <div>
+                    <label for="user-id">Email</label>
+                    <input id="user-id" type="email" placeholder="Email" aria-label="email">
+                </div>
+
+                <div>
+                    <label for="user-pw">Mot de passe</label>
+                    <input id="user-pw" type="password" placeholder="Mot de passe" aria-label="mot de passe">
+                </div>
+
+                <div>
+                    <label for="user-pw-confirm">Confirmation mot de passe</label>
+                    <input id="user-pw-confirm" type="password" placeholder="Mot de passe" aria-label="confirmation mot de passe">
+                </div>
+            </div>
             
-                <button type="submit" class="form__btn">S'inscrire</button>
-            </form>
+            <button @click="signup()" class="form__btn">S'inscrire</button>
 
             <p>Déjà inscrit? <span><a href="#" @click="loginWindow = true; signupWindow = false">Se connecter</a></span></p>
         </div>
@@ -80,7 +71,6 @@
 
 <script>
 
-import axios from "axios"
 import PageFooter from "../components/PageFooter.vue"
 
 export default {
@@ -88,69 +78,22 @@ export default {
         return {
             loginWindow: true,
             signupWindow: false,
-            validPassword : false,
-            lastname: null,
-            firstname: null,
-            email: null,
-            password: null,
-            passwordConfirm: null
+            lastName: "",
+            firstName: "",
+            email: "",
+            password: "",
+            passwordConfirm: ""
         }
     },
-
     components: {
         PageFooter
     },
-
     methods: {
-        login() {
-            axios.post('/users/login', {
-                email: this.email,
-                password: this.password
-            })
-            .then((res) => {
-                localStorage.setItem("user", res.data.userId);
-                localStorage.setItem("token", res.data.token);
-                this.$store.dispatch("getUserId", res.data.userId);
-                this.email = this.password = null;
-                this.$router.push("/home")
-            })
-            .catch(() => {
-                this.password = null;
-                this.$store.state.errorMsg = "Email ou mot de passe incorrect !"
-            })
+        login: function() {
+            this.$router.push("/home")
         },
-
-        signup() {
-            let pwConfirmationLabel = document.getElementById("pwConfirmLabel");
-            let pwConfirmationInput = document.getElementById('passwordConfirm');
-            let pwInput = document.getElementById('password');
-            
-            // On vérifie la correspondance entre le mot de passe et sa confirmation
-            // S'il ne sont pas identiques, un message d'erreur est renvoyé
-            if(pwConfirmationInput.value && pwInput.value && pwInput.value != pwConfirmationInput.value) {
-                pwConfirmationLabel.style.color = 'red';
-                pwConfirmationInput.focus();
-                this.$store.state.errorMsg = "Formulaire invalide";
-                return
-
-            // S'il sont identiques le nouvel utilisateur est enregistré
-            // Sa page de profil est affiché
-            } else {
-                pwConfirmationLabel.style.color = 'initial';
-                
-                axios.post('/users/signup', {
-                    lastname: this.lastname,
-                    firstname: this.firstname,
-                    email: this.email,
-                    password: this.password
-                })
-                .then(() => {
-                    this.login();
-                })
-                .catch(() => {
-                    this.$store.state.errorMsg
-                });
-            }
+        signup: function() {
+            this.$router.push("/profile")
         }
     }
 }
@@ -203,7 +146,7 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        width: 400px;
+        width: 350px;
         margin: 0 auto 50px auto;
         padding: 20px 20px;
         background: linear-gradient(to top left, #ffffffbb, #b3daeebb);
@@ -211,12 +154,6 @@ export default {
         border-radius: 10px;
         box-shadow: 5px 5px 10px #122442;
         font-size: 18px;
-
-        & form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
     }
 
 }
@@ -255,10 +192,6 @@ export default {
     & p {
         margin-top: 20px;
         font-style: italic;
-    }
-
-    & .signup-error {
-        text-align: center;
     }
 }
 

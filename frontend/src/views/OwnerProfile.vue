@@ -6,48 +6,40 @@
     <main id="main" class="main">
         <div class="profile">
             <div class="profile__image">
-                <img :src="userProfile.imageUrl" alt="Photo de profil">
+                <img src="../assets/image_profil_default.jpg" alt="">
             </div>
 
             <div class="profile__modif">
+                <button class="form__btn profile__btn">Modifier Image du profil</button>
+
                 <button @click="showModifPassword = true" class="form__btn profile__btn">Modifier Mot de passe</button>
             </div>
 
             <div class="profile__infos">
-                <form @submit.prevent="updateUser()">
-                    <div class="pi__user">
-                        <input type="text" placeholder="Nom" v-model="lastname" aria-label="Nom" class="pi__user__lastname" required>
+                <div class="pi__user">
+                    <input type="text" placeholder="Nom" aria-label="Nom" class="pi__user__lastname">
 
-                        <input type="text" placeholder="Prénom" v-model="firstname" aria-label="Prénom" class="pi__user__firstname" required>
+                    <input type="text" placeholder="Prénom" aria-label="Prénom" class="pi__user__firstname">
 
-                        <textarea type="text" placeholder="Description" v-model="description" aria-label="Description" class="pi__user__description"></textarea>
-                    </div>
+                    <textarea type="text" placeholder="Description" aria-label="Description" class="pi__user__description"></textarea>
+                </div>
 
-                    <div class="pi__image">
-                        <label for="modify-image"> Modifier l'image</label>
-                        <input type="file" name="modify-image" id="modify-image" accept=".png, .jpg, .jpeg" aria-label="Modifier l'image de profil" @change="updateImage"/>
-                    </div>
+                <div v-if="showModifPassword" class="pi__password">
+                    <button @click="showModifPassword = false">X</button>
 
-                    <div v-if="showModifPassword" class="pi__password">
-                        <button @click="showModifPassword = false" class="close-btn">X</button>
+                    <label for="pi__password__old">Ancien mot de passe</label>
+                    <input type="password" placeholder="Ancien mot de passe" id="pi__password__old">
 
-                        <label for="pi__password__old">Ancien mot de passe</label>
-                        <input type="password" placeholder="Ancien mot de passe" v-model="oldPassword" id="pi__password__old" required>
+                    <label for="pi__password__new">Nouveau mot de passe</label>
+                    <input type="password" placeholder="Nouveau mot de passe" id="pi__password__new">
 
-                        <label for="pi__password__new">Nouveau mot de passe</label>
-                        <input type="password" placeholder="Nouveau mot de passe" v-model="newPassword" id="pi__password__new" required>
+                    <label for="pi__password__confirm">Confirmer mot de passe</label>
+                    <input type="password" placeholder="Confirmer mot de passe" id="pi__password__old">
+                </div>
 
-                        <label for="pi__password__confirm" id="passwordConfirmLabel">Confirmer mot de passe</label>
-                        <input type="password" placeholder="Confirmer mot de passe" v-model="confirmPassword" id="pi__password__confirm" required>
-                    </div>
-
-                    <div class="pi__save">
-                        <button type="submit" class="form__btn profile__btn">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-            <div class="profile__close">
-                <button @click="returnHome()" class="close-btn">X</button>
+                <div class="pi__save">
+                    <button class="form__btn profile__btn">Enregistrer</button>
+                </div>
             </div>
         </div>
     </main>
@@ -59,106 +51,19 @@
 
 <script>
 
-import PageHeader from "../components/PageHeader.vue";
-import PageFooter from "../components/PageFooter.vue";
-import { mapActions } from "vuex";
-import axios from 'axios';
+import PageHeader from "../components/PageHeader.vue"
+import PageFooter from "../components/PageFooter.vue"
 
 export default {
     data() {
         return {
-            showModifPassword: false,
-            oldPassword: null,
-            newPassword: null,
-            confirmPassword: null,
-            userProfile: [],
-            lastname: null,
-            firstname: null,
-            description: null
+            showModifPassword: false
         }
     },
-    
-    mounted() {
-        axios.get('/users/' + this.$store.state.userId)
-            .then(res => {
-                this.userProfile = res.data;
-                this.lastname = this.userProfile.lastname;
-                this.firstname = this.userProfile.firstname;
-                this.description = this.userProfile.description;
-                console.log(this.userProfile);
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    },
-
-    computed: {
-        
-    },
-
-    methods: {
-        ...mapActions(["getOneUser"]),
-
-        returnHome() {
-            this.$router.push("/home")
-        },
-
-        updateImage() {
-            let filename = document.querySelector('#modify-image').files[0];
-            const formData = new FormData();
-            formData.append("userId", this.$store.state.userId);
-            formData.append("image", filename);
-
-            axios.put("/users/image", formData, {
-                headers: {"Content-Type": "multipart/form-data"}
-            })
-                .then(() => {
-                    console.log(formData);
-                    location.reload();
-                })
-                .catch((error => {
-                    console.log(error)
-                }))
-        },
-
-        updateUser() {
-            const formData = new FormData();
-
-            if(this.showModifPassword) {
-                let passwordConfirmLabel = document.getElementById("passwordConfirmLabel");
-                    
-                if(this.newPassword != this.confirmPassword) {
-                    passwordConfirmLabel.style.color = 'red';
-                    return
-                } else {
-                    formData.append("oldPassword", this.oldPassword);
-                    formData.append("newPassword", this.newPassword);
-                }
-            }
-            
-            formData.append("userId", this.userProfile.id);
-            formData.append("lastname", this.lastname);
-            formData.append("firstname", this.firstname);
-            formData.append("description", this.description);
-            
-            console.log(formData);
-
-            axios.put("/users/", formData)
-                .then(() => {
-                    location.reload();
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        }
-    },
-
     components: {
         PageHeader,
         PageFooter
-    },
-
-    
+    }
 }
 </script>
 
@@ -167,7 +72,7 @@ export default {
 .profile {
     display: flex;
     justify-content: space-between;
-    width: 90%;
+    width: 80%;
     margin-bottom: 40px;
     padding: 20px;
     background: linear-gradient(to top left, #ffffffbb, #b3daeebb);
@@ -197,7 +102,7 @@ export default {
         margin: 0 20px;
 
         & button {
-            margin-top: 0;
+            margin: 0 0 20px 0;
         }
     }
 
@@ -224,28 +129,6 @@ export default {
                 }
             }
 
-            &__image {
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-                border: 2px inset grey;
-                margin-bottom: 20px;
-                padding: 5px;
-                border-radius: 10px;
-                background-color: white;
-
-                & label {
-                    font-style: normal;
-                    color: grey;
-                }
-
-                & input {
-                    margin: 5px 0;
-                    padding: 0;
-                    border-radius: 0;
-                }
-            }
-
             &__password {
                 display: flex;
                 flex-direction: column;
@@ -256,6 +139,10 @@ export default {
 
                 & button {
                     align-self: flex-end;
+                    width: 20px;
+                    height: 20px;
+                    background: linear-gradient(to top left, #5dbae9, #122442);
+                    color: #fff;
                 }
             }
 
@@ -263,25 +150,13 @@ export default {
                 display: flex;
                 justify-content: flex-end;
                 align-items: flex-end;
+                height: 100%;
 
                 & button {
                     margin: 0;
                 }
             }
         }
-    }
-
-    &__close {
-        & button {
-            margin-left: 20px;
-        }
-    }
-
-    & .close-btn {
-        width: 20px;
-        height: 20px;
-        background: linear-gradient(to top left, #5dbae9, #122442);
-        color: #fff;
     }
 }
 </style>
