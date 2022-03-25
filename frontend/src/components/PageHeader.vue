@@ -60,7 +60,6 @@ export default {
 
 .header {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
@@ -118,4 +117,42 @@ export default {
     }
 }
 
+@media screen and(max-width: 992px) {
+    .header {
+        flex-direction: column;
+    }
+}
+
+@media screen and(max-width: 768px) {
+    a, p, label {
+        font-size: 14px;
+    }
+
+    .header {
+        min-width: 380px;
+        padding-bottom: 10px;
+
+        &__title {
+            align-self: flex-start;
+        }
+
+        &__logo {
+            height: 250%;
+        }
+
+        &__nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            &__image {
+                position: absolute;
+                top: 15px;
+                right: 0;
+            }
+        }
+
+        &__btn {
+            font-size: 14px;
+        }
+    }
+}
 </style>
