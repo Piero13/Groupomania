@@ -60,12 +60,8 @@ exports.getAllPublications = (req, res) => {
             [Comment, 'createdAt', 'DESC']
         ]
     })
-        .then(publications => {
-            res.status(200).json(publications);
-        })
-        .catch(error => {
-            res.status(500).json({ error });
-        });
+        .then(publications => res.status(200).json(publications))
+        .catch(error => res.status(500).json({ error }));
 };
 
 // Fonction like/dislike des publications

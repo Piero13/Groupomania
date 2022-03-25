@@ -50,7 +50,7 @@ export default {
             this.$router.push("/profile")
         },
         userProfile() {
-            this.$router.push("/profile/:userId")
+            this.$router.push("/profile/users")
         }
     }
 }

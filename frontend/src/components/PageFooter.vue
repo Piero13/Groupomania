@@ -1,6 +1,6 @@
 <template>
     <footer id="footer" class="footer">
-        <p>@Groupomania</p>
+        <p class="footer__text">@Groupomania</p>
     </footer>
 </template>
 
@@ -19,9 +19,18 @@ export default {
     height: 100px;
     background: linear-gradient(to top left, #5dbae9, #122442);
 
-    & p {
+    &__text {
         font-size: 24px;
         color: #fff;
+    }
+}
+
+@media screen and(max-width: 768px) {
+    .footer {
+        height: 80px;
+        &__text {
+            font-size: 18px;
+        }
     }
 }
 

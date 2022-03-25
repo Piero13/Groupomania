@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="body">
     <header id="header" class="header">
         <h1 class="header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="header__logo"></h1>
         <nav class="header__nav">
@@ -18,12 +18,12 @@
                 <div class="form">
                     <div>
                         <label for="email">Identifiant</label>
-                        <input id="email" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
+                        <input id="email" class="form-input" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
                     </div>
 
                     <div>
                         <label for="password">Mot de passe</label>
-                        <input id="password" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
+                        <input id="password" class="form-input" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
                     </div>
 
                     <p class="signup-error" v-if="this.$store.state.errorMsg != null">{{ this.$store.state.errorMsg }}</p>
@@ -40,27 +40,27 @@
                 <div class="form">
                     <div>
                         <label for="lastname">Nom</label>
-                        <input id="lastname" type="text" name="lastname" placeholder="Nom" v-model="lastname" aria-label="nom" required>
+                        <input id="lastname" class="form-input" type="text" name="lastname" placeholder="Nom" v-model="lastname" aria-label="nom" required>
                     </div>
 
                     <div>
                         <label for="firstname">Prénom</label>
-                        <input id="firstname" type="text" name="firstname" placeholder="Prénom" v-model="firstname" aria-label="prénom" required>
+                        <input id="firstname" class="form-input" type="text" name="firstname" placeholder="Prénom" v-model="firstname" aria-label="prénom" required>
                     </div>
 
                     <div>
                         <label for="email">Email</label>
-                        <input id="email" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
+                        <input id="email" class="form-input" type="email" name="email" placeholder="Email" v-model="email" aria-label="email" required>
                     </div>
 
                     <div>
                         <label for="password" id="pwLabel">Mot de passe</label>
-                        <input id="password" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
+                        <input id="password" class="form-input" type="password" name="password" placeholder="Mot de passe" v-model="password" aria-label="mot de passe" required>
                     </div>
 
                     <div>
                         <label for="passwordConfirm" id="pwConfirmLabel">Confirmation mot de passe</label>
-                        <input id="passwordConfirm" type="password" name="passwordConfirm" placeholder="Mot de passe" v-model="passwordConfirm" aria-label="confirmation mot de passe" required>
+                        <input id="passwordConfirm" class="form-input" type="password" name="passwordConfirm" placeholder="Mot de passe" v-model="passwordConfirm" aria-label="confirmation mot de passe" required>
                     </div>
 
                     <p class="signup-error" v-if="this.$store.state.errorMsg != null">{{ this.$store.state.errorMsg }}</p>
@@ -260,6 +260,42 @@ export default {
     & .signup-error {
         text-align: center;
     }
+}
+
+// Responsive mobile
+@media screen and (max-width: 768px) {
+    a, p, label {
+        font-size: 14px;
+    }
+
+    #body {
+        min-width: 380px;
+    }
+
+    #header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 180px;
+        padding: 0 0 20px 0;
+
+        & button {
+            font-size: 14px;
+        }
+    }
+
+    .main {
+        min-height: 600px;
+        background-size: contain;
+        &__form {
+            width: 100%;
+
+            & .form-input, .form__btn {
+                font-size: 14px;
+            }
+        }
+    }
+    
 }
 
 </style>

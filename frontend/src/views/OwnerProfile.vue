@@ -76,18 +76,14 @@ export default {
             userProfile: [],
             lastname: null,
             firstname: null,
-            description: null
+            description: ""
         }
     },
 
     components: {
         PageHeader,
         PageFooter
-    },
-
-    computed: {
-        
-    },
+    },  
 
     methods: {
         returnHome() {
@@ -130,7 +126,10 @@ export default {
             formData.append("userId", this.userProfile.id);
             formData.append("lastname", this.lastname);
             formData.append("firstname", this.firstname);
-            formData.append("description", this.description);
+
+            if(this.description != null) {
+                formData.append("description", this.description);
+            }
             
             console.log(formData);
 
@@ -302,6 +301,7 @@ export default {
     &__close {
         display: flex;
         flex-direction: column;
+        align-items: center;
 
         & .delete-btn {
             margin: 20px 0 0 20px;
