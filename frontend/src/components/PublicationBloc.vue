@@ -3,7 +3,6 @@
         <article class="publication" v-for="publication in this.publications" :key="publication.id">
             <div class="publication__image" v-if="publication.imageUrl">
                 <img :src="publication.imageUrl" alt="image de démo">
-                <button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.admin == true)"><i class="far fa-trash-alt"></i></button>
             </div>
 
             <div class="publication__owner">
@@ -14,13 +13,13 @@
                     </div>
 
                     <div class="po__infos__likes">
-                        <p><i class="far fa-thumbs-up like" @click="likePublication(publication.id, 1)"></i>{{ publication.likes }}</p>  
-                        <p><i class="far fa-thumbs-down dislike" @click="likePublication(publication.id, -1)"></i>{{ publication.dislikes }}</p>
+                        <p><i class="far fa-thumbs-up like" @click="likePublication(publication.id, 1)" title="J'aime"></i>{{ publication.likes }}</p>  
+                        <p><i class="far fa-thumbs-down dislike" @click="likePublication(publication.id, -1)" title="Je n'aime pas"></i>{{ publication.dislikes }}</p>
                     </div>
                 </div>
 
                 <div class="po__post">
-                    <p class="po__post__text"> {{ publication.content }}</p>
+                    <p class="po__post__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
                 </div>
             </div>
 
@@ -28,7 +27,7 @@
                 <div class="publication__comments__new">
                     <form @submit.prevent="createComment(publication.id)">
                         <textarea type="text" id="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
-                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                        <button type="submit" title="Publier le commentaire"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
 
@@ -36,7 +35,7 @@
                     <div class="pcu__infos">
                         <p class="pcu__infos__image"><img :src="comment.User.imageUrl" alt="photo de profil"></p>
                         <a href="#">{{ comment.User.firstname }} {{ comment.User.lastname }}</a>
-                        <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.admin == true)"><i class="far fa-trash-alt"></i></button>
+                        <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deleteComment(comment.id)" title="Supprimer le commentaire"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <p>{{ comment.content}}</p>
                 </div>
@@ -48,6 +47,7 @@
 <script>
 import {mapState, mapActions} from 'vuex'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'PublicationBloc',
@@ -84,6 +84,24 @@ export default {
                 })
         },
 
+        deletePublication(publicationId) {
+            Swal.fire({
+                title: "Confirmer la suppression de la publication ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui",
+                confirmButtonColor: "#32c068",
+                cancelButtonText: "Non",
+                cancelButtonColor: "#e24b43",
+            }).then((response) => {
+                if(response.isConfirmed) {
+                    axios.delete('/publications/' + publicationId)
+                    .then(() => this.$store.dispatch("getPublications"))
+                    .catch((error) => console.log(error))
+                }
+            })
+        },
+
         createComment(publicationId) {
             axios.post("/comments", {
                 publicationId: publicationId,
@@ -97,6 +115,24 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 })
+        },
+
+        deleteComment(commentId) {
+            Swal.fire({
+                title: "Confirmer la suppression du commentaire ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui",
+                confirmButtonColor: "#32c068",
+                cancelButtonText: "Non",
+                cancelButtonColor: "#e24b43",
+            }).then((response) => {
+                if(response.isConfirmed) {
+                    axios.delete('/comments/' + commentId)
+                    .then(() => {this.$store.dispatch("getPublications")})
+                    .catch((error) => console.log(error))
+                }
+            })
         }
     },
 
@@ -104,10 +140,7 @@ export default {
         this.getPublications();
         this.$store.dispatch("getOneUser");
         this.commentContent = null;
-        console.log(this.publications)
-    },
-
-    
+    }
 }
 </script>
 
@@ -135,7 +168,6 @@ section {
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
         overflow: hidden;
         width: 100%;
 
@@ -235,6 +267,8 @@ section {
     }
     
     &__post {
+        display: flex;
+        position: relative;
         padding: 5px 0 15px;
         border-bottom: #122442 3px solid;
     }
@@ -280,13 +314,8 @@ section {
 
 .delete-publication {
     position: absolute;
-    top: 0;
+    top: 5px;
     right: 0;
-    margin: 10px 10px 0 0;
-
-    & i {
-        color: #1148a8;
-    }
 }
 
 </style>

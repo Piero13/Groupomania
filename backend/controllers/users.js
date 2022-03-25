@@ -157,7 +157,12 @@ exports.deleteUser = (req, res) => {
 // Fonction récupération de tous les utilisateurs
 exports.getAllUsers = (req, res) => {
     // Les mots de passe utilisateurs ne sont pas enregistrés dans la réponse
-    User.scope('noPassword').find()
+    User.scope('noPassword').findAll({
+        order: [
+            ['lastname', 'ASC'],
+            ['firstname', 'ASC']
+        ]
+    })
         .then(user => res.status(200).json(user))
         .catch(error => res.status(500).json({ error }))
 };

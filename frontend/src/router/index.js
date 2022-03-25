@@ -23,7 +23,7 @@ const routes = [
     component: OwnerProfile
   },
   {
-    path: '/profile/:userId',
+    path: '/profile/users',
     name: 'UserProfile',
     component: UserProfile
   }

@@ -47,7 +47,8 @@
                 </form>
             </div>
             <div class="profile__close">
-                <button @click="returnHome()" class="close-btn">X</button>
+                <button @click="returnHome()" class="close-btn" title="Fermer la fenêtre profil">X</button>
+                <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>
             </div>
         </div>
     </main>
@@ -61,7 +62,9 @@
 
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
+import router from '../router'
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 export default {
     data() {
@@ -73,26 +76,14 @@ export default {
             userProfile: [],
             lastname: null,
             firstname: null,
-            description: null
+            description: ""
         }
     },
-    
-    mounted() {
-        axios.get('/users/' + this.$store.state.userId)
-            .then(res => {
-                this.userProfile = res.data;
-                this.lastname = this.userProfile.lastname;
-                this.firstname = this.userProfile.firstname;
-                this.description = this.userProfile.description;
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    },
 
-    computed: {
-        
-    },
+    components: {
+        PageHeader,
+        PageFooter
+    },  
 
     methods: {
         returnHome() {
@@ -135,7 +126,10 @@ export default {
             formData.append("userId", this.userProfile.id);
             formData.append("lastname", this.lastname);
             formData.append("firstname", this.firstname);
-            formData.append("description", this.description);
+
+            if(this.description != null) {
+                formData.append("description", this.description);
+            }
             
             console.log(formData);
 
@@ -146,15 +140,53 @@ export default {
                 .catch((err) => {
                     console.log(err)
                 })
-        }
+        },
+
+        deleteUser() {
+            Swal.fire({
+                title: "Confirmer la suppression du compte ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui",
+                confirmButtonColor: "#32c068",
+                cancelButtonText: "Non",
+                cancelButtonColor: "#e24b43",
+            }).then((response) => {
+                if (response.isConfirmed) {
+                axios.delete("/users/" + this.$store.state.userId)
+                .then(() => {
+                    // On réinitialise le store et on le déconnecte
+                    let state = this.$store.state;
+                    let initialState = {};
+                    Object.keys(state).forEach((key) => {
+                        initialState[key] = null;
+                    });
+                    this.$store.replaceState(initialState);
+                    localStorage.clear();
+                    router.push("/");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+                }
+            });
+        },
     },
 
-    components: {
-        PageHeader,
-        PageFooter
-    },
+    mounted() {
+        axios.get('/users/' + this.$store.state.userId)
+        .then(res => {
+            this.userProfile = res.data;
+            this.lastname = this.userProfile.lastname;
+            this.firstname = this.userProfile.firstname;
+            this.description = this.userProfile.description;
+        })
+        .catch((err) => {
+            console.log(err)
+        });
 
-    
+        this.$store.dispatch("getOneUser");
+    }
 }
 </script>
 
@@ -232,7 +264,6 @@ export default {
 
                 & label {
                     font-style: normal;
-                    color: grey;
                 }
 
                 & input {
@@ -268,16 +299,25 @@ export default {
     }
 
     &__close {
-        & button {
-            margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        & .delete-btn {
+            margin: 20px 0 0 20px;
         }
     }
+}
 
-    & .close-btn {
-        width: 20px;
-        height: 20px;
-        background: linear-gradient(to top left, #5dbae9, #122442);
-        color: #fff;
+.close-btn {
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(to top left, #5dbae9, #122442);
+    color: #fff;
+
+    &:hover {
+        transform: scale(1.2);
     }
 }
 </style>

@@ -8,25 +8,34 @@ export default createStore({
     userId: localStorage.getItem('user'),
     connectedUser: null,
     publications: [],
+    users: [],
     likes: null
   },
   
   getters: {
     showConnectedUser(state) {
-      state.connectedUser},
+      state.connectedUser;
+    },
     showPublications(state) {
-      state.publications}
+      state.publications;
+    },
+    showUsers(state) {
+      state.users;
+    }
   },
 
   mutations: {
     SET_USER_ID(state, userId) {
-      state.userId = userId
+      state.userId = userId;
     },
     SET_CONNECTED_USER(state, user) {
-      state.connectedUser = user
+      state.connectedUser = user;
     },
     SET_PUBLICATIONS(state, publications) {
-      state.publications = publications
+      state.publications = publications;
+    },
+    SET_USERS(state, users) {
+      state.users = users;
     }
   },
 
@@ -42,7 +51,7 @@ export default createStore({
         })
         .catch((error) => {
           console.log(error);
-        })
+        });
     },
 
     logout({ commit }) {
@@ -59,8 +68,18 @@ export default createStore({
         })
         .catch((error) => {
           console.log(error);
-        })
+        });
     },
+
+    getUsers({ commit }) {
+      axios.get('/users/')
+        .then(res => {
+          commit("SET_USERS", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   },
 
   modules: {

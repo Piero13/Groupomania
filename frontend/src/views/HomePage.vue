@@ -14,7 +14,7 @@
                 <div class="publish__form">
                     <textarea type="text" placeholder="Nouvelle publication..." aria-label="texte de la publication" v-model="content" class="publish__input" required></textarea>
                     
-                    <input type="file" name="image" accept=".png, .jpg, .jpeg, .gif" id="image-input" @change="uploadImage()">
+                    <input type="file" name="image" accept=".png, .jpg, .jpeg, .gif" id="image-input" @change="uploadImage()" aria-label="Choisir une image">
                 </div>
 
                 <button type="submit" class="form__btn">Publier</button>
