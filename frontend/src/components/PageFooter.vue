@@ -28,6 +28,7 @@ export default {
 @media screen and(max-width: 768px) {
     .footer {
         height: 80px;
+        min-width: 380px;
         &__text {
             font-size: 18px;
         }

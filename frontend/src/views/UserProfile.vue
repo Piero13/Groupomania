@@ -3,7 +3,7 @@
 <div>
     <PageHeader/>
 
-    <main id="main" class="main">
+    <main id="main" class="main main-members">
     
     <div class="members">
         <aside class="search">
@@ -14,7 +14,6 @@
 
                 <div class="search__input">
                     <input type="search" v-model="searchInput" name="search" id="search__members__input" class="search__members__input" aria-label="rechercher des membres" placeholder="Recherche..." @input="searchUsers()" autofocus>
-                    <i class="fas fa-search"></i>
                 </div>
             </div>
 
@@ -264,11 +263,15 @@ export default {
 
 <style lang="scss">
 
+.main-members {
+    min-width: 380px;
+}
+
 .members {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 10px 80px;
+    padding: 10px 60px;
 }
 
 .search {
@@ -301,8 +304,7 @@ export default {
         }
 
         &__input {
-            width: 85%;
-            margin-right: 10px;
+            width: 100%;
         }
     }
 
@@ -384,6 +386,7 @@ export default {
             & .mpi {
                 &__name {
                     display: flex;
+                    flex-wrap: wrap;
                     width: 100%;
                     margin-bottom: 20px;
                 }
@@ -412,4 +415,84 @@ export default {
     }
 }
 
+// Responsive tablet
+@media screen and(max-width: 992px) {
+    .members {
+        padding: 0;
+    }
+
+    .search {
+        margin-right: 40px;
+    }
+
+    .member {
+        & .mpi {
+            &__firstname, &__lastname {
+            font-size: 20px;
+            }
+
+            &__description {
+                font-size: 16px;
+            }
+        }
+
+        & .po {
+            &__post {
+                &__text {
+                    padding-right: 20px;
+                }
+            }
+        }
+    }
+}
+
+// Responsive mobile
+@media screen and(max-width: 768px) {
+    .members {
+        flex-direction: column;
+        align-items: center;
+
+        & i {
+            font-size: 18px;
+        }
+
+        & .search {
+            width: 100%;
+            margin: 0 0 40px 0;
+
+            & .close-btn {
+                margin: 0;
+            }
+
+            &__members {
+                &__input {
+                    font-size: 14px;
+                }
+            }
+
+            &__results {
+                max-height: 120px;
+                overflow: scroll;
+            }
+        }
+
+        & .member {
+            &__profile {
+                &__image {
+                    max-width: 40%;
+                }
+            }
+        }
+
+        & .mpi {
+            &__firstname, &__lastname {
+            font-size: 18px;
+        }
+
+            &__description {
+                font-size: 14px;
+            }
+        }
+    }
+}
 </style>

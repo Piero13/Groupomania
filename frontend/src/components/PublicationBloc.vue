@@ -191,11 +191,13 @@ section {
             & form {
                 display: flex;
                 width: 100%;
+                margin-bottom: 20px;
             }
 
             & textarea {
                 width: 100%;
-                margin: 0 10px 10px 0;
+                height: 100%;
+                margin-right: 10px;
             }
 
             & button {
@@ -211,7 +213,7 @@ section {
         }
 
         &__user {
-            margin: 20px;
+            margin: 0 20px 20px 20px;
             padding: 10px;
             border: #12244255 1px solid;
             border-radius: 10px;
@@ -318,4 +320,22 @@ section {
     right: 0;
 }
 
+// Responsive mobile
+@media screen and(max-width: 768px) {
+    .publication {
+        width: 100%;
+
+        & .po__post__text {
+            padding-right: 20px;
+        }
+
+        & i {
+            font-size: 18px;
+        }
+
+        & textarea {
+            font-size: 14px;
+        }
+    }
+}
 </style>

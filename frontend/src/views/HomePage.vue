@@ -6,7 +6,7 @@
     <main id="main" class="main">
 
         <section class="publish">
-            <form @submit.prevent="createPublication()">
+            <form class="publish__form" @submit.prevent="createPublication()">
                 <div class="publish__preview" v-if="imagePreview">
                     <img :src="imagePreview" alt="Apperçu de l'image" class="publish__newImage">
                 </div>
@@ -153,5 +153,26 @@ export default {
     }
 }
 
+// Responsive tablet
+@media screen and(max-width: 992px) {
+    #main {
+        padding-bottom: 0;
+    }
+    .publish {
+        width: 100%;
+
+        &__form{
+            margin: 0;
+            
+            & input, textarea, button {
+                font-size: 14px;
+            }
+
+            & button {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
 </style>
 

@@ -129,6 +129,7 @@ export default {
     }
 
     .header {
+        position: relative;
         min-width: 380px;
         padding-bottom: 10px;
 
@@ -143,9 +144,11 @@ export default {
         &__nav {
             flex-wrap: wrap;
             justify-content: center;
+            min-width: 380px;
+            padding: 0 20px;
             &__image {
                 position: absolute;
-                top: 15px;
+                top: 10px;
                 right: 0;
             }
         }
