@@ -62,12 +62,13 @@ export default {
     
     computed: {
         ...mapState({
-            publications: ["publications"]
+            publications: ["publications"],
+            users: ["users"]
         })
     },
 
     methods: {
-        ...mapActions(["getPublications"]),
+        ...mapActions(["getPublications", "getUsers"]),
 
         likePublication(publicationId, likeValue) {
             axios.post("/publications/like", {
@@ -138,6 +139,7 @@ export default {
 
     mounted() {
         this.getPublications();
+        this.getUsers();
         this.$store.dispatch("getOneUser");
         this.commentContent = null;
     }

@@ -13,7 +13,7 @@
                 <label for="search__members__input">Rechercher des membres</label>
 
                 <div class="search__input">
-                    <input type="search" v-model="searchInput" name="search" id="search__members__input" class="search__members__input" aria-label="rechercher des membres" placeholder="Recherche..." @input="searchUsers()" autofocus>
+                    <input type="search" v-model="searchInput" name="search" id="search__members__input" class="search__members__input" aria-label="rechercher des membres" placeholder="Recherche..." @input="searchUsers()">
                 </div>
             </div>
 
@@ -114,14 +114,14 @@ export default {
             searchInput: "",
             isUserSelected: false,
             selectedUser: null,
-            selectedUserPublications: null
+            selectedUserPublications: null,
+            commentContent: null,
         }
     },
 
     components: {
         PageHeader,
         PageFooter,
-        // PublicationBloc
     },
 
     computed: {
@@ -132,23 +132,24 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getUsers" , "getPublications"]),
+        ...mapActions(['getUsers' , 'getPublications']),
 
         returnHome() {
             this.$router.push("/home")
         },
 
         searchUsers() {
-            const element = this.searchInput
-            const searchResult = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element))
+            const element = this.searchInput;
+            this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
+            // this.searchResults = searchResult
 
-            return this.searchResults = searchResult
+            return 
         },
 
         showUserPublications(idUser) {
-            const userId = idUser
-            const searchResult = this.publications.filter(publication => publication.userId.toString().includes(userId))
-            console.log(searchResult)
+            const userId = idUser;
+            const searchResult = this.publications.filter(publication => publication.userId.toString().includes(userId));
+
             return this.selectedUserPublications = searchResult
         },
 
@@ -160,7 +161,6 @@ export default {
             })
                 .then(() => {
                     this.getPublications();
-                    window.location.reload();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -252,11 +252,11 @@ export default {
 
     mounted() {
         this.getUsers();
-        this.getPublications();
-        this.$store.dispatch("getOneUser");
         this.searchUsers();
+        this.getPublications();
+        
         console.log(this.$store.state.users);
-        console.log(this.$store.state.publications)
+        console.log(this.$store.state.publications);
     }
 }
 </script>
@@ -271,7 +271,7 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 10px 60px;
+    padding: 10px 40px;
 }
 
 .search {
@@ -280,7 +280,7 @@ export default {
     align-items: center;
     width: 30%;
     height: fit-content;
-    margin-right: 100px;
+    margin-right: 40px;
     padding: 20px;
     background: linear-gradient(to top left, #ffffffbb, #b3daeebb);
     border: 2px solid #122442;
