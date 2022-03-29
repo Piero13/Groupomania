@@ -320,4 +320,59 @@ export default {
         transform: scale(1.2);
     }
 }
+
+//responsive tablet
+@media screen and(max-width: 992px) {
+    .profile {
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+
+        &__image {
+            margin-bottom: 20px;
+        }
+
+        &__btn {
+            margin-bottom: 20px;
+        }
+
+        &__infos {
+            width: 70%;
+        }
+
+        &__close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    }
+}
+
+// responsive mobile
+@media screen and(max-width: 768px) {
+    .main {
+        min-width: 380px;
+        padding: 0;
+    }
+    .profile {
+        width: 100%;
+        margin-bottom: 40px;
+
+        &__image {
+            width: 60%;
+        }
+
+        & button, input, textarea {
+            font-size: 14px;
+        }
+
+        &__infos {
+            width: 100%;
+        }
+
+        & .pi__save {
+            justify-content: center;
+        }
+    }
+}
 </style>

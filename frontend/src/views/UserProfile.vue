@@ -3,7 +3,7 @@
 <div>
     <PageHeader/>
 
-    <main id="main" class="main">
+    <main id="main" class="main main-members">
     
     <div class="members">
         <aside class="search">
@@ -13,8 +13,7 @@
                 <label for="search__members__input">Rechercher des membres</label>
 
                 <div class="search__input">
-                    <input type="search" v-model="searchInput" name="search" id="search__members__input" class="search__members__input" aria-label="rechercher des membres" placeholder="Recherche..." @input="searchUsers()" autofocus>
-                    <i class="fas fa-search"></i>
+                    <input type="search" v-model="searchInput" name="search" id="search__members__input" class="search__members__input" aria-label="rechercher des membres" placeholder="Recherche..." @input="searchUsers()">
                 </div>
             </div>
 
@@ -115,14 +114,14 @@ export default {
             searchInput: "",
             isUserSelected: false,
             selectedUser: null,
-            selectedUserPublications: null
+            selectedUserPublications: null,
+            commentContent: null,
         }
     },
 
     components: {
         PageHeader,
         PageFooter,
-        // PublicationBloc
     },
 
     computed: {
@@ -133,23 +132,24 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getUsers" , "getPublications"]),
+        ...mapActions(['getUsers' , 'getPublications']),
 
         returnHome() {
             this.$router.push("/home")
         },
 
         searchUsers() {
-            const element = this.searchInput
-            const searchResult = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element))
+            const element = this.searchInput;
+            this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
+            // this.searchResults = searchResult
 
-            return this.searchResults = searchResult
+            return 
         },
 
         showUserPublications(idUser) {
-            const userId = idUser
-            const searchResult = this.publications.filter(publication => publication.userId.toString().includes(userId))
-            console.log(searchResult)
+            const userId = idUser;
+            const searchResult = this.publications.filter(publication => publication.userId.toString().includes(userId));
+
             return this.selectedUserPublications = searchResult
         },
 
@@ -161,7 +161,6 @@ export default {
             })
                 .then(() => {
                     this.getPublications();
-                    window.location.reload();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -253,22 +252,26 @@ export default {
 
     mounted() {
         this.getUsers();
-        this.getPublications();
-        this.$store.dispatch("getOneUser");
         this.searchUsers();
+        this.getPublications();
+        
         console.log(this.$store.state.users);
-        console.log(this.$store.state.publications)
+        console.log(this.$store.state.publications);
     }
 }
 </script>
 
 <style lang="scss">
 
+.main-members {
+    min-width: 380px;
+}
+
 .members {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 10px 80px;
+    padding: 10px 40px;
 }
 
 .search {
@@ -277,7 +280,7 @@ export default {
     align-items: center;
     width: 30%;
     height: fit-content;
-    margin-right: 100px;
+    margin-right: 40px;
     padding: 20px;
     background: linear-gradient(to top left, #ffffffbb, #b3daeebb);
     border: 2px solid #122442;
@@ -301,8 +304,7 @@ export default {
         }
 
         &__input {
-            width: 85%;
-            margin-right: 10px;
+            width: 100%;
         }
     }
 
@@ -384,6 +386,7 @@ export default {
             & .mpi {
                 &__name {
                     display: flex;
+                    flex-wrap: wrap;
                     width: 100%;
                     margin-bottom: 20px;
                 }
@@ -412,4 +415,84 @@ export default {
     }
 }
 
+// Responsive tablet
+@media screen and(max-width: 992px) {
+    .members {
+        padding: 0;
+    }
+
+    .search {
+        margin-right: 40px;
+    }
+
+    .member {
+        & .mpi {
+            &__firstname, &__lastname {
+            font-size: 20px;
+            }
+
+            &__description {
+                font-size: 16px;
+            }
+        }
+
+        & .po {
+            &__post {
+                &__text {
+                    padding-right: 20px;
+                }
+            }
+        }
+    }
+}
+
+// Responsive mobile
+@media screen and(max-width: 768px) {
+    .members {
+        flex-direction: column;
+        align-items: center;
+
+        & i {
+            font-size: 18px;
+        }
+
+        & .search {
+            width: 100%;
+            margin: 0 0 40px 0;
+
+            & .close-btn {
+                margin: 0;
+            }
+
+            &__members {
+                &__input {
+                    font-size: 14px;
+                }
+            }
+
+            &__results {
+                max-height: 120px;
+                overflow: scroll;
+            }
+        }
+
+        & .member {
+            &__profile {
+                &__image {
+                    max-width: 40%;
+                }
+            }
+        }
+
+        & .mpi {
+            &__firstname, &__lastname {
+            font-size: 18px;
+        }
+
+            &__description {
+                font-size: 14px;
+            }
+        }
+    }
+}
 </style>

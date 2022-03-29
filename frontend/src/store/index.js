@@ -72,7 +72,7 @@ export default createStore({
     },
 
     getUsers({ commit }) {
-      axios.get('/users/')
+      axios.get('/users')
         .then(res => {
           commit("SET_USERS", res.data);
         })
@@ -81,8 +81,4 @@ export default createStore({
         });
     }
   },
-
-  modules: {
-
-  }
 })

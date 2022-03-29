@@ -1,12 +1,12 @@
 <template>
 <div id="body">
-    <header id="header" class="header">
-        <h1 class="header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="header__logo"></h1>
-        <nav class="header__nav">
-            <button @click="loginWindow = true; signupWindow = false" class="header__nav__login header__btn">
+    <header id="log-header" class="log-header">
+        <h1 class="log-header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="log-header__logo"></h1>
+        <nav class="log-header__nav">
+            <button @click="loginWindow = true; signupWindow = false" class="log-header__nav__login header__btn">
                 Se connecter
             </button>
-            <button @click="loginWindow = false; signupWindow = true" class="header__nav_signup header__btn">
+            <button @click="loginWindow = false; signupWindow = true" class="log-header__nav_signup header__btn">
                 S'inscrire
             </button>
         </nav>
@@ -158,7 +158,7 @@ export default {
 
 <style lang="scss">
 
-.header {
+.log-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -177,7 +177,9 @@ export default {
     &__logo {
         height: 300%;
     };
+}
 
+.header {
     &__btn {
         width: 140px;
         margin: 10px 20px;
@@ -272,9 +274,10 @@ export default {
         min-width: 380px;
     }
 
-    #header {
+    #log-header {
         display: flex;
         flex-direction: column;
+        align-items: center;
         width: 100%;
         height: 180px;
         padding: 0 0 20px 0;
