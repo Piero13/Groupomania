@@ -35,6 +35,15 @@ export default {
         }
     },
 
+    methods: {
+        ownerProfile() {
+            this.$router.push("/profile")
+        },
+        userProfile() {
+            this.$router.push("/profile/users")
+        }
+    },
+
     mounted() {
         axios.get('/users/' + this.$store.state.userId)
             .then(res => {
@@ -44,15 +53,6 @@ export default {
                 console.log(err)
             })
     },
-
-    methods: {
-        ownerProfile() {
-            this.$router.push("/profile")
-        },
-        userProfile() {
-            this.$router.push("/profile/users")
-        }
-    }
 }
 </script>
 

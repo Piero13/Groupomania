@@ -64,8 +64,8 @@
                         </div>
                     </div>
 
-                    <div class="po__post">
-                        <p class="po__post__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
+                    <div class="po__publication">
+                        <p class="po__publication__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@ import PageFooter from "../components/PageFooter.vue";
 import router from '../router'
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import {mapState, mapActions} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 // import PublicationBloc from "../components/PublicationBloc.vue"
 
 export default {
@@ -116,6 +116,7 @@ export default {
             selectedUser: null,
             selectedUserPublications: null,
             commentContent: null,
+            
         }
     },
 
@@ -125,10 +126,9 @@ export default {
     },
 
     computed: {
-        ...mapState({
-            users: ["users"],
-            publications: ["publications"]
-        })
+        ...mapGetters({
+            publications: 'showPublications',
+            users: 'showUsers'})
     },
 
     methods: {
@@ -141,16 +141,15 @@ export default {
         searchUsers() {
             const element = this.searchInput;
             this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
-            // this.searchResults = searchResult
-
+            
             return 
         },
 
         showUserPublications(idUser) {
             const userId = idUser;
-            const searchResult = this.publications.filter(publication => publication.userId.toString().includes(userId));
+            this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(userId));
 
-            return this.selectedUserPublications = searchResult
+            return
         },
 
         likePublication(publicationId, likeValue) {
@@ -161,6 +160,7 @@ export default {
             })
                 .then(() => {
                     this.getPublications();
+                    console.log(this.$store.state.publications)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -192,7 +192,7 @@ export default {
                 content: this.commentContent
             })
                 .then(() => {
-                    this.$store.dispatch("getPublications");
+                    this.getPublications();
                     this.commentContent = null;
                 })
                 .catch((error) => {
@@ -212,7 +212,7 @@ export default {
             }).then((response) => {
                 if(response.isConfirmed) {
                     axios.delete('/comments/' + commentId)
-                    .then(() => {this.$store.dispatch("getPublications")})
+                    .then(() => {this.getPublications()})
                     .catch((error) => console.log(error))
                 }
             })
@@ -257,7 +257,12 @@ export default {
         
         console.log(this.$store.state.users);
         console.log(this.$store.state.publications);
-    }
+    },
+
+    updated() {
+        this.getPublications()
+        this.getUsers();
+    },
 }
 </script>
 
@@ -412,6 +417,16 @@ export default {
 
     & .publication {
         width: 100%;
+
+        & .po__publication{
+            position: relative;
+        }
+
+        & .delete-publication {
+            position: absolute;
+            top: 5px;
+            right: 0;
+        }
     }
 }
 
@@ -437,7 +452,7 @@ export default {
         }
 
         & .po {
-            &__post {
+            &__publication {
                 &__text {
                     padding-right: 20px;
                 }
@@ -471,7 +486,7 @@ export default {
             }
 
             &__results {
-                max-height: 120px;
+                max-height: 140px;
                 overflow: scroll;
             }
         }

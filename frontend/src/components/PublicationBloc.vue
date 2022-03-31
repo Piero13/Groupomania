@@ -18,15 +18,15 @@
                     </div>
                 </div>
 
-                <div class="po__post">
-                    <p class="po__post__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
+                <div class="po__publication">
+                    <p class="po__publication__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
                 </div>
             </div>
 
             <div class="publication__comments">
                 <div class="publication__comments__new">
                     <form @submit.prevent="createComment(publication.id)">
-                        <textarea type="text" id="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
+                        <textarea type="text" class="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
                         <button type="submit" title="Publier le commentaire"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
@@ -55,20 +55,18 @@ export default {
     Data() {
         return {
             publications: [],
-            comments: [],
             commentContent: null
         }
     },
     
     computed: {
         ...mapState({
-            publications: ["publications"],
-            users: ["users"]
+            publications: ["publications"]
         })
     },
 
     methods: {
-        ...mapActions(["getPublications", "getUsers"]),
+        ...mapActions(["getPublications"]),
 
         likePublication(publicationId, likeValue) {
             axios.post("/publications/like", {
@@ -139,7 +137,6 @@ export default {
 
     mounted() {
         this.getPublications();
-        this.getUsers();
         this.$store.dispatch("getOneUser");
         this.commentContent = null;
     }
@@ -270,11 +267,15 @@ section {
         }
     }
     
-    &__post {
+    &__publication {
         display: flex;
         position: relative;
         padding: 5px 0 15px;
         border-bottom: #122442 3px solid;
+
+        &__text {
+            margin-right: 20px;
+        }
     }
 }
 
@@ -327,7 +328,7 @@ section {
     .publication {
         width: 100%;
 
-        & .po__post__text {
+        & .po__publication__text {
             padding-right: 20px;
         }
 

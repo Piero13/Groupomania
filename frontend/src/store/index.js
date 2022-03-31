@@ -13,15 +13,8 @@ export default createStore({
   },
   
   getters: {
-    showConnectedUser(state) {
-      state.connectedUser;
-    },
-    showPublications(state) {
-      state.publications;
-    },
-    showUsers(state) {
-      state.users;
-    }
+    showPublications: (state) => state.publications,
+    showUsers: (state) => state.users,
   },
 
   mutations: {
