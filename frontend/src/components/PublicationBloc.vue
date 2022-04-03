@@ -9,13 +9,10 @@
                 <div class="po__infos">
                     <div class="po__infos__profile">
                         <p class="po__infos__image"><img :src="publication.User.imageUrl" alt="photo de profil"></p>
-                        <a href="#">{{ publication.User.firstname }} {{ publication.User.lastname }}</a>
+                        <p>{{ publication.User.firstname }} {{ publication.User.lastname }}</p>
                     </div>
 
-                    <div class="po__infos__likes">
-                        <p><i class="far fa-thumbs-up like" @click="likePublication(publication.id, 1)" title="J'aime"></i>{{ publication.likes }}</p>  
-                        <p><i class="far fa-thumbs-down dislike" @click="likePublication(publication.id, -1)" title="Je n'aime pas"></i>{{ publication.dislikes }}</p>
-                    </div>
+                    <LikeBloc :publication="publication"/>
                 </div>
 
                 <div class="po__publication">
@@ -34,10 +31,10 @@
                 <div class="publication__comments__user" v-for="comment in publication.Comments" :key="comment.id">
                     <div class="pcu__infos">
                         <p class="pcu__infos__image"><img :src="comment.User.imageUrl" alt="photo de profil"></p>
-                        <a href="#">{{ comment.User.firstname }} {{ comment.User.lastname }}</a>
+                        <p>{{ comment.User.firstname }} {{ comment.User.lastname }}</p>
                         <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deleteComment(comment.id)" title="Supprimer le commentaire"><i class="far fa-trash-alt"></i></button>
                     </div>
-                    <p>{{ comment.content}}</p>
+                    <p>{{ comment.content }}</p>
                 </div>
             </div>
         </article>
@@ -45,9 +42,11 @@
 </template>
 
 <script>
+
 import {mapState, mapActions} from 'vuex'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import LikeBloc from "../components/LikeBloc.vue"
 
 export default {
     name: 'PublicationBloc',
@@ -58,6 +57,10 @@ export default {
             commentContent: null
         }
     },
+
+    components: {
+        LikeBloc
+    },
     
     computed: {
         ...mapState({
@@ -67,21 +70,6 @@ export default {
 
     methods: {
         ...mapActions(["getPublications"]),
-
-        likePublication(publicationId, likeValue) {
-            axios.post("/publications/like", {
-                publicationId: publicationId,
-                userId: parseInt(this.$store.state.userId),
-                likeValue: likeValue
-            })
-                .then(() => {
-                    this.$store.dispatch("getPublications");
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        },
 
         deletePublication(publicationId) {
             Swal.fire({
@@ -139,7 +127,7 @@ export default {
         this.getPublications();
         this.$store.dispatch("getOneUser");
         this.commentContent = null;
-    }
+    },
 }
 </script>
 
@@ -242,28 +230,11 @@ section {
 
         &__image {
             overflow: hidden;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             margin-right: 20px;
             border: 1px solid #122442;
-            border-radius: 16px;
-        }
-
-        &__likes {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 80px;
-            font-size: 20px;
-
-            & i {
-                margin-right: 5px;
-                cursor: pointer;
-                &:hover {
-                    transform: scale(1.2);
-                    color: #1148a8;
-                }
-            }
+            border-radius: 21px;
         }
     }
     

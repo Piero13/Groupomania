@@ -59,8 +59,15 @@
                         </div>
 
                         <div class="po__infos__likes">
-                            <p><i class="far fa-thumbs-up like" @click="likePublication(publication.id, 1)" title="J'aime"></i>{{ publication.likes }}</p>  
-                            <p><i class="far fa-thumbs-down dislike" @click="likePublication(publication.id, -1)" title="Je n'aime pas"></i>{{ publication.dislikes }}</p>
+                            <form @submit.prevent="likePublication(publication.id, 1)">
+                                <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-up like"></i></button>
+                            </form>
+                            <p>{{ publication.likes }}</p>
+
+                            <form @submit.prevent="likePublication(publication.id, -1)">
+                                <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
+                            </form>
+                            <p>{{ publication.dislikes }}</p>
                         </div>
                     </div>
 
@@ -254,14 +261,10 @@ export default {
         this.getUsers();
         this.searchUsers();
         this.getPublications();
+        this.$store.dispatch("getOneUser");
         
         console.log(this.$store.state.users);
         console.log(this.$store.state.publications);
-    },
-
-    updated() {
-        this.getPublications()
-        this.getUsers();
     },
 }
 </script>
@@ -353,7 +356,7 @@ export default {
 .member {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 65%;
 
     &__profile {
         position: relative;
@@ -437,10 +440,12 @@ export default {
     }
 
     .search {
+        width: 30%;
         margin-right: 40px;
     }
 
     .member {
+        width: 65%;
         & .mpi {
             &__firstname, &__lastname {
             font-size: 20px;
@@ -492,6 +497,7 @@ export default {
         }
 
         & .member {
+            width: 100%;
             &__profile {
                 &__image {
                     max-width: 40%;

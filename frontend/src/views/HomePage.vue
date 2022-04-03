@@ -44,11 +44,13 @@ export default {
             content: null
         }
     },
+
     components: {
         PageHeader,
         PageFooter,
         PublicationBloc
     },
+
     methods: {
         uploadImage() {
             let inputFile = document.querySelector("#image-input");
@@ -88,6 +90,10 @@ export default {
                     });
             }
         }
+    },
+
+    mounted() {
+        this.$store.dispatch("getPublications")
     }
 }
 </script>
