@@ -4,13 +4,13 @@
         <form @submit.prevent="likePublication(publication.id, 1)">
             <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-up like"></i></button>
         </form>
-        <p>{{ publication.likes }}</p>
+        <p>{{ publicationLikes }}</p>
 
         <!-- Bouton "dislike" -->
         <form @submit.prevent="likePublication(publication.id, -1)">
             <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
         </form>
-        <p>{{ publication.dislikes }}</p>
+        <p>{{ publicationDislikes }}</p>
 
     </div>
 </template>
@@ -22,6 +22,14 @@ import axios from 'axios';
 
 export default {
     name: 'LikeBloc',
+
+    Data() {
+        return {
+            publicationLikes: "",
+            publicationDislikes: "",
+            publicationId: ""
+        }
+    },
 
     props: {
         publication: Object
@@ -44,8 +52,12 @@ export default {
             })
                 .then(() => {
                     this.$store.dispatch("getPublications");
-                    location.reload()
-                    console.log(this.$store.state.publications)  
+                    const userPublication = this.$store.state.publications.find(publication => publication.id == this.publicationId)
+                    this.publicationLikes = userPublication.likes;
+                    this.publicationDislikes = userPublication.dislikes;
+                    console.log(this.$store.state.publications)
+                    console.log(this.publicationLikes);
+                    console.log(this.publicationDislikes);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -53,10 +65,21 @@ export default {
         },
     },
 
+    created() {
+        this.publicationLikes = this.publication.likes;
+        console.log(this.publicationLikes);
+
+        this.publicationDislikes = this.publication.dislikes;
+        console.log(this.publicationDislikes);
+
+        this.publicationId = this.publication.id;
+        console.log(this.publicationId);
+    },    
+
     mounted() {
         this.$store.dispatch("getOneUser");
-        this.getPublications();
     },
+
 }
 
 </script>
