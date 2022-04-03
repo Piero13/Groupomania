@@ -13,8 +13,10 @@
                 <button @click="showModifPassword = true" class="form__btn profile__btn">Modifier Mot de passe</button>
             </div>
 
+            
             <div class="profile__infos">
                 <form @submit.prevent="updateUser()">
+                    <!-- Informations utilisateur -->
                     <div class="pi__user">
                         <input type="text" placeholder="Nom" v-model="lastname" aria-label="Nom" class="pi__user__lastname" required>
 
@@ -23,11 +25,13 @@
                         <textarea type="text" placeholder="Description" v-model="description" aria-label="Description" class="pi__user__description"></textarea>
                     </div>
 
+                    <!-- Modification de l'image -->
                     <div class="pi__image">
                         <label for="modify-image"> Modifier l'image</label>
                         <input type="file" name="modify-image" id="modify-image" accept=".png, .jpg, .jpeg" aria-label="Modifier l'image de profil" @change="updateImage"/>
                     </div>
 
+                    <!-- Modification du mot de passe -->
                     <div v-if="showModifPassword" class="pi__password">
                         <button @click="showModifPassword = false" class="close-btn">X</button>
 
@@ -46,6 +50,8 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Boutons retour page d'accueil & suppression du compte utilisateur -->
             <div class="profile__close">
                 <button @click="returnHome()" class="close-btn" title="Fermer la fenêtre profil">X</button>
                 <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>
@@ -90,6 +96,7 @@ export default {
             this.$router.push("/home")
         },
 
+        // Fonction modification image de profil
         updateImage() {
             let filename = document.querySelector('#modify-image').files[0];
             const formData = new FormData();
@@ -108,9 +115,11 @@ export default {
                 }))
         },
 
+        // Fonction modification compte utilisateur
         updateUser() {
             const formData = new FormData();
 
+            // Modification du mot de passe utilisateur
             if(this.showModifPassword) {
                 let passwordConfirmLabel = document.getElementById("passwordConfirmLabel");
                     
@@ -123,16 +132,19 @@ export default {
                 }
             }
             
+            // Modification des information utilisateur
             formData.append("userId", this.userProfile.id);
             formData.append("lastname", this.lastname);
             formData.append("firstname", this.firstname);
 
+            // Modification de la description utilisateur
             if(this.description != null) {
                 formData.append("description", this.description);
             }
             
             console.log(formData);
 
+            // Envoi de la requête modification
             axios.put("/users/", formData)
                 .then(() => {
                     location.reload();
@@ -142,6 +154,7 @@ export default {
                 })
         },
 
+        // Fonction suppression compte utilisateur
         deleteUser() {
             Swal.fire({
                 title: "Confirmer la suppression du compte ?",

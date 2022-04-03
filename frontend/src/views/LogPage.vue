@@ -1,5 +1,6 @@
 <template>
 <div id="body">
+    <!-- Header de la page de connexion -->
     <header id="log-header" class="log-header">
         <h1 class="log-header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="log-header__logo"></h1>
         <nav class="log-header__nav">
@@ -13,6 +14,7 @@
     </header>
     
     <main id="main" class="main">
+        <!-- Bloc connexion -->
         <div v-if="loginWindow" class="main__form">
             <form method="post" @submit.prevent="login()">
                 <div class="form">
@@ -35,6 +37,7 @@
             <p>Pas encore inscrit? <span><a href="#" @click="loginWindow = false; signupWindow = true">S'inscrire</a></span></p>
         </div>
 
+        <!-- Bloc inscription -->
         <div v-if="signupWindow" class="main__form">
             <form method="post" @submit.prevent="signup()">
                 <div class="form">
@@ -102,6 +105,7 @@ export default {
     },
 
     methods: {
+        // Fonction connexion
         login() {
             axios.post('/users/login', {
                 email: this.email,
@@ -120,6 +124,7 @@ export default {
             })
         },
 
+        // Fonction inscription
         signup() {
             let pwConfirmationLabel = document.getElementById("pwConfirmLabel");
             let pwConfirmationInput = document.getElementById('passwordConfirm');

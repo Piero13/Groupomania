@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 import router from '../router'
 
 export default createStore({
+
   state: {
     errorMsg: null,
     userId: localStorage.getItem('user'),
@@ -54,8 +55,8 @@ export default createStore({
       router.push("/")
     },
 
-    getPublications({ commit }) {
-      axios.get('/publications')
+    async getPublications({ commit }) {
+      await axios.get('/publications')
         .then(res => {
           commit("SET_PUBLICATIONS", res.data);
         })

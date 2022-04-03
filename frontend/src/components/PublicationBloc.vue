@@ -1,11 +1,15 @@
 <template>
     <section>
-        <article class="publication" v-for="publication in this.publications" :key="publication.id">
+        <article class="publication" v-for="publication in showPublications" :key="publication.id">
+            <!-- Image de la publication -->
             <div class="publication__image" v-if="publication.imageUrl">
                 <img :src="publication.imageUrl" alt="image de démo">
             </div>
 
+            <!-- Détails et infos sur la publication -->
             <div class="publication__owner">
+
+                <!-- Infos utilisateur & likes/dislikes -->
                 <div class="po__infos">
                     <div class="po__infos__profile">
                         <p class="po__infos__image"><img :src="publication.User.imageUrl" alt="photo de profil"></p>
@@ -15,12 +19,17 @@
                     <LikeBloc :publication="publication"/>
                 </div>
 
+                <!-- Infos publication & bouton suppresson -->
                 <div class="po__publication">
-                    <p class="po__publication__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
+                    <p class="po__publication__text"> {{ publication.content }}</p>
+                    
+                    <button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
                 </div>
             </div>
 
+            <!-- Ajout & affichage des commentaires -->
             <div class="publication__comments">
+                <!-- Champ pou rajout de commentaires -->
                 <div class="publication__comments__new">
                     <form @submit.prevent="createComment(publication.id)">
                         <textarea type="text" class="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
@@ -28,10 +37,12 @@
                     </form>
                 </div>
 
+                <!-- Affichage des commentaires -->
                 <div class="publication__comments__user" v-for="comment in publication.Comments" :key="comment.id">
                     <div class="pcu__infos">
                         <p class="pcu__infos__image"><img :src="comment.User.imageUrl" alt="photo de profil"></p>
                         <p>{{ comment.User.firstname }} {{ comment.User.lastname }}</p>
+                        
                         <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deleteComment(comment.id)" title="Supprimer le commentaire"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <p>{{ comment.content }}</p>
@@ -43,7 +54,7 @@
 
 <script>
 
-import {mapState, mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import LikeBloc from "../components/LikeBloc.vue"
@@ -63,14 +74,13 @@ export default {
     },
     
     computed: {
-        ...mapState({
-            publications: ["publications"]
-        })
+        ...mapGetters(["showPublications"])
     },
 
     methods: {
         ...mapActions(["getPublications"]),
 
+        // Fonction suppression publication
         deletePublication(publicationId) {
             Swal.fire({
                 title: "Confirmer la suppression de la publication ?",
@@ -83,12 +93,13 @@ export default {
             }).then((response) => {
                 if(response.isConfirmed) {
                     axios.delete('/publications/' + publicationId)
-                    .then(() => this.$store.dispatch("getPublications"))
+                    .then(() => this.getPublications())
                     .catch((error) => console.log(error))
                 }
             })
         },
 
+        // Fonction création de commentaire
         createComment(publicationId) {
             axios.post("/comments", {
                 publicationId: publicationId,
@@ -96,7 +107,7 @@ export default {
                 content: this.commentContent
             })
                 .then(() => {
-                    this.$store.dispatch("getPublications");
+                    this.getPublications();
                     this.commentContent = null;
                 })
                 .catch((error) => {
@@ -104,6 +115,7 @@ export default {
                 })
         },
 
+        // Fonction suppression de commentaire
         deleteComment(commentId) {
             Swal.fire({
                 title: "Confirmer la suppression du commentaire ?",
@@ -116,7 +128,7 @@ export default {
             }).then((response) => {
                 if(response.isConfirmed) {
                     axios.delete('/comments/' + commentId)
-                    .then(() => {this.$store.dispatch("getPublications")})
+                    .then(() => this.getPublications())
                     .catch((error) => console.log(error))
                 }
             })

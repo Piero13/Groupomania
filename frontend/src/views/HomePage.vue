@@ -5,6 +5,7 @@
 
     <main id="main" class="main">
 
+        <!-- Bloc création d'une publication -->
         <section class="publish">
             <form class="publish__form" @submit.prevent="createPublication()">
                 <div class="publish__preview" v-if="imagePreview">
@@ -32,9 +33,10 @@
 <script>
 
 import axios from "axios";
-import PageHeader from "../components/PageHeader.vue"
-import PageFooter from "../components/PageFooter.vue"
-import PublicationBloc from "../components/PublicationBloc.vue"
+import PageHeader from "../components/PageHeader.vue";
+import PageFooter from "../components/PageFooter.vue";
+import PublicationBloc from "../components/PublicationBloc.vue";
+import {mapActions} from 'vuex';
 
 export default {
     data() {
@@ -51,7 +53,12 @@ export default {
         PublicationBloc
     },
 
+    computed: {
+        ...mapActions(["getPublications"])
+    },
+
     methods: {
+        // Fonction import d'une image
         uploadImage() {
             let inputFile = document.querySelector("#image-input");
 
@@ -61,10 +68,9 @@ export default {
                 this.imagePreview = reader.result;
             };
             reader.readAsDataURL(this.imageFile);
-            console.log(this.imagePreview)
-            console.log(this.imageFile)
         },
 
+        // Fonction création de publication
         createPublication() {
             const formData = new FormData();
             if(!this.imageFile && !this.content) {
@@ -83,7 +89,7 @@ export default {
                     headers: {"Content-Type": "multipart/form-data"}
                 })
                     .then(() => {
-                        this.$store.dispatch("getPublications");
+                        this.getPublications();
                     })
                     .catch((error) => {
                         console.log(error);
@@ -91,10 +97,6 @@ export default {
             }
         }
     },
-
-    mounted() {
-        this.$store.dispatch("getPublications")
-    }
 }
 </script>
 

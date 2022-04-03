@@ -1,49 +1,32 @@
 <template>
     <div class="po__infos__likes">
         <!-- Bouton "like" -->
-        <form @submit.prevent="likePublication(publication.id, 1)">
-            <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-up like"></i></button>
-        </form>
-        <p>{{ publicationLikes }}</p>
+        <button @click="likePublication(publication.id, 1)" title="J'aime" class="like-btn"><i class="far fa-thumbs-up like"></i></button>
+        <p>{{ publication.likes }}</p>
 
         <!-- Bouton "dislike" -->
-        <form @submit.prevent="likePublication(publication.id, -1)">
-            <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
-        </form>
-        <p>{{ publicationDislikes }}</p>
+        <button @click="likePublication(publication.id, -1)" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
+        <p>{{ publication.dislikes }}</p>
 
     </div>
 </template>
 
 <script>
 
-import {mapState, mapActions} from 'vuex'
+import {mapActions} from 'vuex'
 import axios from 'axios';
 
 export default {
     name: 'LikeBloc',
 
-    Data() {
-        return {
-            publicationLikes: "",
-            publicationDislikes: "",
-            publicationId: ""
-        }
-    },
-
     props: {
         publication: Object
-    },
-
-    computed: {
-        ...mapState({
-            publications: ["publications"]
-        })
     },
 
     methods: {
         ...mapActions(["getPublications"]),
 
+        // Fonction like/dislike
         likePublication(publicationId, likeValue) {
             axios.post("/publications/like", {
                 publicationId: publicationId,
@@ -51,30 +34,14 @@ export default {
                 likeValue: likeValue
             })
                 .then(() => {
-                    this.$store.dispatch("getPublications");
-                    const userPublication = this.$store.state.publications.find(publication => publication.id == this.publicationId)
-                    this.publicationLikes = userPublication.likes;
-                    this.publicationDislikes = userPublication.dislikes;
-                    console.log(this.$store.state.publications)
-                    console.log(this.publicationLikes);
-                    console.log(this.publicationDislikes);
+                    this.getPublications();
+                    // location.reload()
                 })
                 .catch((error) => {
                     console.log(error);
                 })
         },
-    },
-
-    created() {
-        this.publicationLikes = this.publication.likes;
-        console.log(this.publicationLikes);
-
-        this.publicationDislikes = this.publication.dislikes;
-        console.log(this.publicationDislikes);
-
-        this.publicationId = this.publication.id;
-        console.log(this.publicationId);
-    },    
+    },   
 
     mounted() {
         this.$store.dispatch("getOneUser");
