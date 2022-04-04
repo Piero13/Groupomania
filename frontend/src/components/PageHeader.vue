@@ -37,13 +37,15 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getUsers"]),
+        ...mapActions(["getUsers", "getPublications"]),
 
         ownerProfile() {
-            this.$router.push("/profile")
+            this.$router.push("/profile");
         },
+
         userProfile() {
-            this.$router.push("/users")
+            this.$router.push("/users");
+            
         }
     },
 

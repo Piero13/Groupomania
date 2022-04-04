@@ -69,7 +69,7 @@ export default {
     Data() {
         return {
             publications: [],
-            commentContent: null
+            commentContent: "",
         }
     },
 
@@ -112,7 +112,7 @@ export default {
             })
                 .then(() => {
                     this.getPublications();
-                    this.commentContent = null;
+                    this.commentContent = "";
                 })
                 .catch((error) => {
                     console.log(error);
@@ -142,7 +142,6 @@ export default {
     mounted() {
         this.getPublications();
         this.$store.dispatch("getOneUser");
-        this.commentContent = null;
     },
 }
 </script>

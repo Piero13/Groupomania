@@ -83,8 +83,6 @@ export default {
             isUserSelected: false,
             selectedUser: null,
             selectedUserPublications: null,
-            commentContent: null,
-            
         }
     },
 
@@ -101,7 +99,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['getUsers' , 'getPublications', 'getOneUser']),
+        ...mapActions(['getUsers' , 'getPublications']),
 
         returnHome() {
             this.$router.push("/home")
@@ -110,7 +108,7 @@ export default {
         searchUsers() {
             const element = this.searchInput;
             this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
-            
+
             return 
         },
 
@@ -126,72 +124,6 @@ export default {
             this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(userId));
 
             return
-        },
-
-        likePublication(publicationId, likeValue) {
-            axios.post("/publications/like", {
-                publicationId: publicationId,
-                userId: parseInt(this.$store.state.userId),
-                likeValue: likeValue
-            })
-                .then(() => {
-                    this.getPublications();
-                    console.log(this.$store.state.publications)
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        },
-
-        deletePublication(publicationId) {
-            Swal.fire({
-                title: "Confirmer la suppression de la publication ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui",
-                confirmButtonColor: "#32c068",
-                cancelButtonText: "Non",
-                cancelButtonColor: "#e24b43",
-            }).then((response) => {
-                if(response.isConfirmed) {
-                    axios.delete('/publications/' + publicationId)
-                    .then(() => this.getPublications())
-                    .catch((error) => console.log(error))
-                }
-            })
-        },
-
-        createComment(publicationId) {
-            axios.post("/comments", {
-                publicationId: publicationId,
-                userId: parseInt(this.$store.state.userId),
-                content: this.commentContent
-            })
-                .then(() => {
-                    this.getPublications();
-                    this.commentContent = null;
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        },
-
-        deleteComment(commentId) {
-            Swal.fire({
-                title: "Confirmer la suppression du commentaire ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui",
-                confirmButtonColor: "#32c068",
-                cancelButtonText: "Non",
-                cancelButtonColor: "#e24b43",
-            }).then((response) => {
-                if(response.isConfirmed) {
-                    axios.delete('/comments/' + commentId)
-                    .then(() => {this.getPublications()})
-                    .catch((error) => console.log(error))
-                }
-            })
         },
 
         deleteUser() {
@@ -248,18 +180,14 @@ export default {
     },
 
     beforeMount() {
-        this.getUsers();
-        this.getPublications();
         this.selectedUser = this.users.find(user => user.id == localStorage.getItem("selectedUser"));
         this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(localStorage.getItem("selectedUser")));
     },
 
     mounted() {
-        this.getUsers();
         this.searchUsers();
+        this.getUsers();
         this.getPublications();
-        this.getOneUser();
-        
         console.log(this.users);
         console.log(this.publications);
         console.log(this.selectedUser)
