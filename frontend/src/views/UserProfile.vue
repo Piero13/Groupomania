@@ -6,9 +6,11 @@
     <main id="main" class="main main-members">
     
     <div class="members">
+        <!-- Recherche d'utilisateurs -->
         <aside class="search">
             <button @click="returnHome()" class="close-btn" title="Fermer la fenêtre de recherche">X</button>
 
+            <!-- Champ de recherche -->
             <div class="search__members">
                 <label for="search__members__input">Rechercher des membres</label>
 
@@ -17,17 +19,20 @@
                 </div>
             </div>
 
+            <!-- Résultats de recherche -->
             <div class="search__results">
                 <div v-for="user in searchResults" :key="user.id">
                     <p class="search__results__image"><img :src="user.imageUrl" alt="image de profil du membre"></p>
 
-                    <a href="#" @click="isUserSelected = true, this.selectedUser = user, showUserPublications(user.id)">{{ user.lastname }} {{ user.firstname }}</a>
+                    <a href="#" @click="selectUser(user)">{{ user.lastname }} {{ user.firstname }}</a>
                 </div>
             </div>
         </aside>
 
+        <!-- Affichage profil et publications de l'utilisateur sélectionné -->
         <section class="member">
-            <div class="member__profile" v-if="isUserSelected">
+            <!-- Affichage du profil utilisateur -->
+            <div class="member__profile">
                 <div class="member__profile__image">
                     <img :src="this.selectedUser.imageUrl" alt="image du profil">
                 </div>
@@ -42,10 +47,10 @@
                     <p class="mpi__description">{{ this.selectedUser.description }}</p>
                 </div>
 
-                <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.selectedUser.id || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>
-                
+                <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.selectedUser.id || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>   
             </div>
 
+            <!-- Affichage des publications utilisateur -->
             <article class="publication" v-for="publication in this.selectedUserPublications" :key="publication.id">
                 <div class="publication__image" v-if="publication.imageUrl">
                     <img :src="publication.imageUrl" alt="image de démo">
@@ -150,6 +155,13 @@ export default {
             this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
             
             return 
+        },
+
+        selectUser(user) {
+            this.isUserSelected = true;
+            this.selectedUser = user;
+            localStorage.setItem("selectedUser", user.id)
+            this.showUserPublications(user.id)
         },
 
         showUserPublications(idUser) {
@@ -257,14 +269,23 @@ export default {
         },
     },
 
+    beforeMount() {
+        this.getUsers();
+        this.getPublications();
+        this.selectedUser = this.users.find(user => user.id == localStorage.getItem("selectedUser"));
+        this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(localStorage.getItem("selectedUser")));
+    },
+
     mounted() {
         this.getUsers();
         this.searchUsers();
         this.getPublications();
         this.$store.dispatch("getOneUser");
         
-        console.log(this.$store.state.users);
-        console.log(this.$store.state.publications);
+        
+        console.log(this.users);
+        console.log(this.publications);
+        console.log(this.selectedUser)
     },
 }
 </script>

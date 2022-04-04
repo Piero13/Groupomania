@@ -114,6 +114,7 @@ export default {
             .then((res) => {
                 localStorage.setItem("user", res.data.userId);
                 localStorage.setItem("token", res.data.token);
+                localStorage.setItem("selectedUser", res.data.userId)
                 this.$store.dispatch("getUserId", res.data.userId);
                 this.email = this.password = null;
                 this.$router.push("/home")

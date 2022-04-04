@@ -25,6 +25,7 @@
 <script>
 
 import axios from "axios"
+import {mapActions} from 'vuex'
 
 export default {
     name: 'PageHeader',
@@ -36,11 +37,13 @@ export default {
     },
 
     methods: {
+        ...mapActions(["getUsers"]),
+
         ownerProfile() {
             this.$router.push("/profile")
         },
         userProfile() {
-            this.$router.push("/profile/users")
+            this.$router.push("/users")
         }
     },
 
@@ -52,8 +55,8 @@ export default {
             .catch((err) => {
                 console.log(err)
             }),
-            
-        this.$store.dispatch("getUsers")
+        
+        this.getUsers()
     },
 }
 </script>

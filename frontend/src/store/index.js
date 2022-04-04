@@ -55,8 +55,8 @@ export default createStore({
       router.push("/")
     },
 
-    async getPublications({ commit }) {
-      await axios.get('/publications')
+    getPublications({ commit }) {
+      axios.get('/publications')
         .then(res => {
           commit("SET_PUBLICATIONS", res.data);
         })
