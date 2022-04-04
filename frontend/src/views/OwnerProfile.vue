@@ -157,7 +157,7 @@ export default {
         // Fonction suppression compte utilisateur
         deleteUser() {
             Swal.fire({
-                title: "Confirmer la suppression du compte ?",
+                title: "Confirmer la suppression de votre compte ?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Oui",
@@ -168,6 +168,12 @@ export default {
                 if (response.isConfirmed) {
                 axios.delete("/users/" + this.$store.state.userId)
                 .then(() => {
+                    Swal.fire({
+                        title: "Votre compte a bien été supprimé",
+                        icon: "success",
+                        confirmButtonText: "Ok",
+                        confirmButtonColor: "#32c068",
+                    })
                     // On réinitialise le store et on le déconnecte
                     let state = this.$store.state;
                     let initialState = {};

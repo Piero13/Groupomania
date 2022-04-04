@@ -22,7 +22,9 @@
             </form>
         </section>
 
-        <PublicationBloc/>
+        <div>
+            <PublicationBloc v-for="publication in showPublications" :key="publication.id" :publication="publication"/>
+        </div>
     </main>
 
     <PageFooter/>
@@ -36,7 +38,7 @@ import axios from "axios";
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
 import PublicationBloc from "../components/PublicationBloc.vue";
-import {mapActions} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
     data() {
@@ -54,10 +56,12 @@ export default {
     },
 
     computed: {
-        ...mapActions(["getPublications"])
+        ...mapGetters(["showPublications"])
     },
 
     methods: {
+        ...mapActions(["getPublications"]),
+
         // Fonction import d'une image
         uploadImage() {
             let inputFile = document.querySelector("#image-input");
@@ -97,6 +101,10 @@ export default {
             }
         }
     },
+
+    mounted() {
+        this.getPublications()
+    }
 }
 </script>
 

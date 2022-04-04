@@ -1,6 +1,6 @@
 <template>
     <section>
-        <article class="publication" v-for="publication in showPublications" :key="publication.id">
+        <article class="publication" >
             <!-- Image de la publication -->
             <div class="publication__image" v-if="publication.imageUrl">
                 <img :src="publication.imageUrl" alt="image de démo">
@@ -61,6 +61,10 @@ import LikeBloc from "../components/LikeBloc.vue"
 
 export default {
     name: 'PublicationBloc',
+
+    props: {
+        publication: Object
+    },
 
     Data() {
         return {

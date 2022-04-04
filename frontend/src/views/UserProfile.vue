@@ -51,54 +51,9 @@
             </div>
 
             <!-- Affichage des publications utilisateur -->
-            <article class="publication" v-for="publication in this.selectedUserPublications" :key="publication.id">
-                <div class="publication__image" v-if="publication.imageUrl">
-                    <img :src="publication.imageUrl" alt="image de démo">
-                </div>
-
-                <div class="publication__owner">
-                    <div class="po__infos">
-                        <div class="po__infos__profile">
-                            <p class="po__infos__image"><img :src="publication.User.imageUrl" alt="photo de profil"></p>
-                            <p>{{ publication.User.firstname }} {{ publication.User.lastname }}</p>
-                        </div>
-
-                        <div class="po__infos__likes">
-                            <form @submit.prevent="likePublication(publication.id, 1)">
-                                <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-up like"></i></button>
-                            </form>
-                            <p>{{ publication.likes }}</p>
-
-                            <form @submit.prevent="likePublication(publication.id, -1)">
-                                <button type="submit" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
-                            </form>
-                            <p>{{ publication.dislikes }}</p>
-                        </div>
-                    </div>
-
-                    <div class="po__publication">
-                        <p class="po__publication__text"> {{ publication.content }}</p><button class="delete-btn delete-publication" v-if="this.$store.state.connectedUser != null && (publication.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deletePublication(publication.id)" title="Supprimer la publication"><i class="far fa-trash-alt"></i></button>
-                    </div>
-                </div>
-
-                <div class="publication__comments">
-                    <div class="publication__comments__new">
-                        <form @submit.prevent="createComment(publication.id)">
-                            <textarea type="text" id="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
-                            <button type="submit" title="Publier le commentaire"><i class="fas fa-paper-plane"></i></button>
-                        </form>
-                    </div>
-
-                    <div class="publication__comments__user" v-for="comment in publication.Comments" :key="comment.id">
-                        <div class="pcu__infos">
-                            <p class="pcu__infos__image"><img :src="comment.User.imageUrl" alt="photo de profil"></p>
-                            <p>{{ comment.User.firstname }} {{ comment.User.lastname }}</p>
-                            <button class="delete-btn delete-comment" v-if="this.$store.state.connectedUser != null && (comment.userId == this.$store.state.userId || this.$store.state.connectedUser.isAdmin == true)" @click="deleteComment(comment.id)" title="Supprimer le commentaire"><i class="far fa-trash-alt"></i></button>
-                        </div>
-                        <p>{{ comment.content}}</p>
-                    </div>
-                </div>
-            </article>
+            <div>
+                <PublicationBloc v-for="publication in this.selectedUserPublications" :key="publication.id" :publication="publication"/>
+            </div>
         </section>
 
     </div>
@@ -113,6 +68,7 @@
 
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
+import PublicationBloc from "../components/PublicationBloc.vue";
 import router from '../router'
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -135,6 +91,7 @@ export default {
     components: {
         PageHeader,
         PageFooter,
+        PublicationBloc,
     },
 
     computed: {
@@ -144,7 +101,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['getUsers' , 'getPublications']),
+        ...mapActions(['getUsers' , 'getPublications', 'getOneUser']),
 
         returnHome() {
             this.$router.push("/home")
@@ -238,6 +195,8 @@ export default {
         },
 
         deleteUser() {
+            console.log(this.selectedUser);
+            console.log(this.$store.state.connectedUser)
             Swal.fire({
                 title: "Confirmer la suppression du compte :",
                 text: this.selectedUser.firstname + " " + this.selectedUser.lastname,
@@ -247,19 +206,38 @@ export default {
                 confirmButtonColor: "#32c068",
                 cancelButtonText: "Non",
                 cancelButtonColor: "#e24b43",
-            }).then((response) => {
+            })
+            .then((response) => {
                 if (response.isConfirmed) {
                 axios.delete("/users/" + this.selectedUser.id)
                 .then(() => {
-                    // On réinitialise le store et on le déconnecte
-                    let state = this.$store.state;
-                    let initialState = {};
-                    Object.keys(state).forEach((key) => {
-                        initialState[key] = null;
-                    });
-                    this.$store.replaceState(initialState);
-                    localStorage.clear();
-                    router.push("/");
+                    
+                    if(this.selectedUser.id == this.$store.state.connectedUser.id) {
+                        Swal.fire({
+                            title: "Votre compte a bien été supprimé",
+                            icon: "success",
+                            confirmButtonText: "Ok",
+                            confirmButtonColor: "#32c068",
+                        })
+                        // On réinitialise le store et on le déconnecte
+                        let state = this.$store.state;
+                        let initialState = {};
+                        Object.keys(state).forEach((key) => {
+                            initialState[key] = null;
+                        });
+                        this.$store.replaceState(initialState);
+                        localStorage.clear();
+                        router.push("/");
+                    } else {
+                        Swal.fire({
+                            title: "Le compte de " + this.selectedUser.firstname + " " + this.selectedUser.lastname + " a bien été supprimé",
+                            icon: "success",
+                            confirmButtonText: "Retour à la page d'accueil",
+                            confirmButtonColor: "#32c068",
+                        })
+                        localStorage.setItem("selectedUser", this.$store.state.connectedUser.id)
+                        router.push("/home")
+                    }
                 })
                 .catch((error) => {
                     console.log(error);
@@ -280,8 +258,7 @@ export default {
         this.getUsers();
         this.searchUsers();
         this.getPublications();
-        this.$store.dispatch("getOneUser");
-        
+        this.getOneUser();
         
         console.log(this.users);
         console.log(this.publications);
