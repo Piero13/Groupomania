@@ -9,6 +9,8 @@ export default createStore({
     userId: localStorage.getItem('user'),
     connectedUser: null,
     publications: [],
+    selectedUser: [],
+    selectedUserPublications: [],
     users: [],
     likes: null
   },
@@ -30,6 +32,12 @@ export default createStore({
     },
     SET_USERS(state, users) {
       state.users = users;
+    },
+    SET_SELECTED_USER(state, selectedUser) {
+      state.selectedUser = selectedUser;
+    },
+    SET_SELECTED_USER_PUBLICATIONS(state, selectedUserPublications) {
+      state.selectedUserPublications = selectedUserPublications;
     }
   },
 
@@ -46,6 +54,30 @@ export default createStore({
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    findUser({ commit }) {
+      axios.get('/users')
+      .then(res => {
+        commit("SET_USERS", res.data);
+        commit("SET_SELECTED_USER", res.data.find(user => user.id == localStorage.getItem("selectedUser")))
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+
+    findUserPublications({ commit }) {
+      axios.get('/publications')
+        .then(res => {
+          commit("SET_PUBLICATIONS", res.data);
+          commit("SET_SELECTED_USER_PUBLICATIONS", res.data.filter(publication => publication.userId.toString().includes(localStorage.getItem("selectedUser")))
+          )
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      
     },
 
     logout({ commit }) {

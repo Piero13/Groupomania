@@ -35,7 +35,7 @@ export default {
             })
                 .then(() => {
                     this.getPublications();
-                    // location.reload()
+                    location.reload()
                 })
                 .catch((error) => {
                     console.log(error);

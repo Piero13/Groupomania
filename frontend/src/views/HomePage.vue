@@ -45,7 +45,7 @@ export default {
         return {
             imagePreview: null,
             imageFile: null,
-            content: null
+            content: null,
         }
     },
 
@@ -60,7 +60,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getPublications"]),
+        ...mapActions(["getPublications", "getUsers", "findUser", "findUserPublications"]),
 
         // Fonction import d'une image
         uploadImage() {
@@ -102,8 +102,16 @@ export default {
         }
     },
 
+    created() {
+        this.findUser()
+        this.findUserPublications()
+    },
+
     mounted() {
         this.getPublications()
+        
+        console.log(this.$store.state.selectedUser)
+        console.log(this.$store.state.selectedUserPublications)
     }
 }
 </script>

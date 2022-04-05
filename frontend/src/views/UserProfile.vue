@@ -34,25 +34,25 @@
             <!-- Affichage du profil utilisateur -->
             <div class="member__profile">
                 <div class="member__profile__image">
-                    <img :src="this.selectedUser.imageUrl" alt="image du profil">
+                    <img :src="this.$store.state.selectedUser.imageUrl" alt="image du profil">
                 </div>
 
                 <div class="member__profile__infos">
                     <div class="mpi__name">
-                        <p class="mpi__firstname">{{ this.selectedUser.firstname }}</p>
+                        <p class="mpi__firstname">{{ this.$store.state.selectedUser.firstname }}</p>
 
-                        <p class="mpi__lastname">{{ this.selectedUser.lastname }}</p>
+                        <p class="mpi__lastname">{{ this.$store.state.selectedUser.lastname }}</p>
                     </div>
 
-                    <p class="mpi__description">{{ this.selectedUser.description }}</p>
+                    <p class="mpi__description">{{ this.$store.state.selectedUser.description }}</p>
                 </div>
 
-                <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.selectedUser.id || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>   
+                <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.$store.state.selectedUser.id || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>   
             </div>
 
             <!-- Affichage des publications utilisateur -->
             <div>
-                <PublicationBloc v-for="publication in this.selectedUserPublications" :key="publication.id" :publication="publication"/>
+                <PublicationBloc v-for="publication in this.$store.state.selectedUserPublications" :key="publication.id" :publication="publication"/>
             </div>
         </section>
 
@@ -66,14 +66,13 @@
 
 <script>
 
+import axios from 'axios';
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
 import PublicationBloc from "../components/PublicationBloc.vue";
 import router from '../router'
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import {mapActions, mapGetters} from 'vuex';
-// import PublicationBloc from "../components/PublicationBloc.vue"
 
 export default {
     data() {
@@ -81,8 +80,6 @@ export default {
             searchResults: [],
             searchInput: "",
             isUserSelected: false,
-            selectedUser: null,
-            selectedUserPublications: null,
         }
     },
 
@@ -93,18 +90,22 @@ export default {
     },
 
     computed: {
-        ...mapGetters({
-            publications: 'showPublications',
-            users: 'showUsers'})
+        ...mapGetters(
+            {
+                publications: 'showPublications',
+                users: 'showUsers',
+            })
     },
 
     methods: {
-        ...mapActions(['getUsers' , 'getPublications']),
+        ...mapActions(['getUsers' , 'getPublications', 'findUser', 'findUserPublications']),
 
+        // Fonction retour à la page d'accueil
         returnHome() {
             this.$router.push("/home")
         },
 
+        // Fonction recherche utilisateurs
         searchUsers() {
             const element = this.searchInput;
             this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
@@ -112,26 +113,27 @@ export default {
             return 
         },
 
+        // Fonction sélection utilisateur
         selectUser(user) {
             this.isUserSelected = true;
-            this.selectedUser = user;
+            this.$store.state.selectedUser = user;
             localStorage.setItem("selectedUser", user.id)
             this.showUserPublications(user.id)
         },
 
+        // Fonction récupération des publications de l'utilisateur sélectionné
         showUserPublications(idUser) {
             const userId = idUser;
-            this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(userId));
+            this.$store.state.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(userId));
 
             return
         },
 
+        // Fonction suppression d'un utilisateur
         deleteUser() {
-            console.log(this.selectedUser);
-            console.log(this.$store.state.connectedUser)
             Swal.fire({
                 title: "Confirmer la suppression du compte :",
-                text: this.selectedUser.firstname + " " + this.selectedUser.lastname,
+                text: this.$store.state.selectedUser.firstname + " " + this.$store.state.selectedUser.lastname,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Oui",
@@ -141,10 +143,10 @@ export default {
             })
             .then((response) => {
                 if (response.isConfirmed) {
-                axios.delete("/users/" + this.selectedUser.id)
+                axios.delete("/users/" + this.$store.state.selectedUser.id)
                 .then(() => {
-                    
-                    if(this.selectedUser.id == this.$store.state.connectedUser.id) {
+                    // Si le propriétaire du compte fait la demande
+                    if(this.$store.state.selectedUser.id == this.$store.state.connectedUser.id) {
                         Swal.fire({
                             title: "Votre compte a bien été supprimé",
                             icon: "success",
@@ -160,15 +162,16 @@ export default {
                         this.$store.replaceState(initialState);
                         localStorage.clear();
                         router.push("/");
+                    // Si c'est un compte admin non propriétaire du compte
                     } else {
                         Swal.fire({
-                            title: "Le compte de " + this.selectedUser.firstname + " " + this.selectedUser.lastname + " a bien été supprimé",
+                            title: "Le compte de " + this.$store.state.selectedUser.firstname + " " + this.$store.state.selectedUser.lastname + " a bien été supprimé",
                             icon: "success",
                             confirmButtonText: "Retour à la page d'accueil",
                             confirmButtonColor: "#32c068",
-                        })
-                        localStorage.setItem("selectedUser", this.$store.state.connectedUser.id)
-                        router.push("/home")
+                        });
+                        localStorage.setItem("selectedUser", this.$store.state.connectedUser.id);
+                        router.push("/home");
                     }
                 })
                 .catch((error) => {
@@ -179,18 +182,15 @@ export default {
         },
     },
 
-    beforeMount() {
-        this.selectedUser = this.users.find(user => user.id == localStorage.getItem("selectedUser"));
-        this.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(localStorage.getItem("selectedUser")));
+    created() {
+        this.findUser();
+        this.findUserPublications();
     },
 
     mounted() {
         this.searchUsers();
         this.getUsers();
         this.getPublications();
-        console.log(this.users);
-        console.log(this.publications);
-        console.log(this.selectedUser)
     },
 }
 </script>

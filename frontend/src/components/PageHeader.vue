@@ -14,7 +14,7 @@
             Membres
         </button>
 
-        <button @click="$store.dispatch('logout')" class="header__nav_logout header__btn">
+        <button @click="logout()" class="header__nav_logout header__btn">
             Se déconnecter
         </button>
     </nav>
@@ -37,7 +37,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(["getUsers", "getPublications"]),
+        ...mapActions(["getUsers", "getPublications", "logout"]),
 
         ownerProfile() {
             this.$router.push("/profile");
