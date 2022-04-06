@@ -3,7 +3,7 @@
 <div>
     <PageHeader/>
 
-    <main id="main" class="main main-members">
+    <main id="main" class="main">
     
     <div class="members">
         <!-- Recherche d'utilisateurs -->
@@ -51,9 +51,9 @@
             </div>
 
             <!-- Affichage des publications utilisateur -->
-            <div>
-                <PublicationBloc v-for="publication in this.$store.state.selectedUserPublications" :key="publication.id" :publication="publication"/>
-            </div>
+            
+            <PublicationBloc v-for="publication in this.$store.state.selectedUserPublications" :key="publication.id" :publication="publication"/>
+            
         </section>
 
     </div>
@@ -197,7 +197,7 @@ export default {
 
 <style lang="scss">
 
-.main-members {
+.main {
     min-width: 380px;
 }
 

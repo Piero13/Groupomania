@@ -3,7 +3,7 @@
 <div>
     <PageHeader/>
 
-    <main id="main" class="main">
+    <main id="main" class="main main-ownerProfile">
         <div class="profile">
             <div class="profile__image">
                 <img :src="userProfile.imageUrl" alt="Photo de profil">

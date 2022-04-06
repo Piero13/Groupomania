@@ -5,7 +5,7 @@
         <p>{{ publication.likes }}</p>
 
         <!-- Bouton "dislike" -->
-        <button @click="likePublication(publication.id, -1)" title="J'aime" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
+        <button @click="likePublication(publication.id, -1)" title="Je n'aime pas" class="like-btn"><i class="far fa-thumbs-down dislike"></i></button>
         <p>{{ publication.dislikes }}</p>
 
     </div>

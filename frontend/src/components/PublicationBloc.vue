@@ -142,6 +142,7 @@ export default {
     mounted() {
         this.getPublications();
         this.$store.dispatch("getOneUser");
+        this.commentContent = ""
     },
 }
 </script>
@@ -307,6 +308,13 @@ section {
     position: absolute;
     top: 5px;
     right: 0;
+}
+
+// Responsive tablet
+@media screen and(max-width: 992px) {
+    .publication {
+        width: 100%;
+    }
 }
 
 // Responsive mobile

@@ -3,7 +3,7 @@
 <div>
     <PageHeader/>
 
-    <main id="main" class="main">
+    <main id="main" class="main main-home">
 
         <!-- Bloc création d'une publication -->
         <section class="publish">
@@ -179,7 +179,7 @@ export default {
 
 // Responsive tablet
 @media screen and(max-width: 992px) {
-    #main {
+    .main-home {
         padding-bottom: 0;
     }
     .publish {
@@ -198,5 +198,13 @@ export default {
         }
     }
 }
+
+//Responsive mobile
+@media screen and(max-width: 768px) {
+    .main-home {
+        padding: 30px 30px 0 30px;
+    }
+}
+
 </style>
 

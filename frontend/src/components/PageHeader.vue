@@ -124,12 +124,14 @@ export default {
     }
 }
 
+// Responsive tablet
 @media screen and(max-width: 992px) {
     .header {
         flex-direction: column;
     }
 }
 
+// Responsive mobile
 @media screen and(max-width: 768px) {
     a, p, label {
         font-size: 14px;
@@ -155,8 +157,8 @@ export default {
             padding: 0 20px;
             &__image {
                 position: absolute;
-                top: 10px;
-                right: 0;
+                top: 15px;
+                right: 5px;
             }
         }
 
