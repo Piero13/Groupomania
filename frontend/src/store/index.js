@@ -18,6 +18,7 @@ export default createStore({
   getters: {
     showPublications: (state) => state.publications,
     showUsers: (state) => state.users,
+    showSelectedUserPublications: (state) => state.selectedUserPublications,
   },
 
   mutations: {
@@ -70,7 +71,6 @@ export default createStore({
     findUserPublications({ commit }) {
       axios.get('/publications')
         .then(res => {
-          commit("SET_PUBLICATIONS", res.data);
           commit("SET_SELECTED_USER_PUBLICATIONS", res.data.filter(publication => publication.userId.toString().includes(localStorage.getItem("selectedUser")))
           )
         })

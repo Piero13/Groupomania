@@ -109,9 +109,6 @@ export default {
 
     mounted() {
         this.getPublications()
-        
-        console.log(this.$store.state.selectedUser)
-        console.log(this.$store.state.selectedUserPublications)
     }
 }
 </script>

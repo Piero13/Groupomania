@@ -52,7 +52,7 @@
 
             <!-- Affichage des publications utilisateur -->
             
-            <PublicationBloc v-for="publication in this.$store.state.selectedUserPublications" :key="publication.id" :publication="publication"/>
+            <PublicationBloc v-for="publication in showSelectedUserPublications" :key="publication.id" :publication="publication"/>
             
         </section>
 
@@ -91,10 +91,11 @@ export default {
 
     computed: {
         ...mapGetters(
-            {
-                publications: 'showPublications',
-                users: 'showUsers',
-            })
+            [
+                'showPublications',
+                'showUsers',
+                'showSelectedUserPublications',
+            ])
     },
 
     methods: {
@@ -108,7 +109,7 @@ export default {
         // Fonction recherche utilisateurs
         searchUsers() {
             const element = this.searchInput;
-            this.searchResults = this.users.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
+            this.searchResults = this.showUsers.filter(user => user.lastname.toLowerCase().includes(element) || user.firstname.toLowerCase().includes(element));
 
             return 
         },
@@ -124,7 +125,7 @@ export default {
         // Fonction récupération des publications de l'utilisateur sélectionné
         showUserPublications(idUser) {
             const userId = idUser;
-            this.$store.state.selectedUserPublications = this.publications.filter(publication => publication.userId.toString().includes(userId));
+            this.$store.state.selectedUserPublications = this.showPublications.filter(publication => publication.userId.toString().includes(userId));
 
             return
         },
@@ -188,9 +189,13 @@ export default {
     },
 
     mounted() {
+        this.getPublications();
         this.searchUsers();
         this.getUsers();
-        this.getPublications();
+    },
+
+    beforeUpdate() {
+        this.searchUsers();
     },
 }
 </script>

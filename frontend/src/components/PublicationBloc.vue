@@ -69,7 +69,7 @@ export default {
     Data() {
         return {
             publications: [],
-            commentContent: "",
+            commentContent: null,
         }
     },
 
@@ -97,7 +97,10 @@ export default {
             }).then((response) => {
                 if(response.isConfirmed) {
                     axios.delete('/publications/' + publicationId)
-                    .then(() => this.getPublications())
+                    .then(() => {
+                        this.getPublications();
+                        location.reload();
+                        })
                     .catch((error) => console.log(error))
                 }
             })
@@ -113,6 +116,7 @@ export default {
                 .then(() => {
                     this.getPublications();
                     this.commentContent = "";
+                    location.reload();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -132,7 +136,10 @@ export default {
             }).then((response) => {
                 if(response.isConfirmed) {
                     axios.delete('/comments/' + commentId)
-                    .then(() => this.getPublications())
+                    .then(() => {
+                        this.getPublications();
+                        location.reload();
+                        })
                     .catch((error) => console.log(error))
                 }
             })
@@ -141,8 +148,7 @@ export default {
 
     mounted() {
         this.getPublications();
-        this.$store.dispatch("getOneUser");
-        this.commentContent = ""
+        this.$store.dispatch("getOneUser"); 
     },
 }
 </script>

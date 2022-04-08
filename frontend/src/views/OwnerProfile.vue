@@ -107,7 +107,6 @@ export default {
                 headers: {"Content-Type": "multipart/form-data"}
             })
                 .then(() => {
-                    console.log(formData);
                     location.reload();
                 })
                 .catch((error => {
@@ -141,8 +140,6 @@ export default {
             if(this.description != null) {
                 formData.append("description", this.description);
             }
-            
-            console.log(formData);
 
             // Envoi de la requête modification
             axios.put("/users/", formData)
