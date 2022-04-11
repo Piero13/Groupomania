@@ -13,7 +13,7 @@
                 <div class="po__infos">
                     <div class="po__infos__profile">
                         <p class="po__infos__image"><img :src="publication.User.imageUrl" alt="photo de profil"></p>
-                        <p>{{ publication.User.firstname }} {{ publication.User.lastname }}</p>
+                        <p class="po__infos__text">{{ publication.User.firstname }} {{ publication.User.lastname }}</p>
                     </div>
 
                     <LikeBloc :publication="publication"/>
@@ -240,14 +240,6 @@ section {
         &__profile {
             display: flex;
             align-items: center;
-
-            & img {
-                width: 100%;
-            }
-
-            & p {
-                font-size: 18px;
-            }
         }
 
         &__image {
@@ -257,6 +249,14 @@ section {
             margin-right: 20px;
             border: 1px solid #122442;
             border-radius: 21px;
+
+            & img {
+                width: 100%;
+            }
+        }
+
+        &__text {
+            font-size: 18px;
         }
     }
     
@@ -326,10 +326,20 @@ section {
 // Responsive mobile
 @media screen and(max-width: 768px) {
     .publication {
-        width: 100%;
-
+        &__owner {
+            padding: 15px;
+        }
         & .po__publication__text {
             padding-right: 20px;
+        }
+
+        & .po__infos {
+            &__image {
+                margin-right: 10px;
+            }
+            &__text {
+                font-size: 16px;
+            }
         }
 
         & i {
