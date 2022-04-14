@@ -31,7 +31,7 @@
 
         <!-- Affichage profil et publications de l'utilisateur sélectionné -->
         <section class="member">
-            <!-- Affichage du profil utilisateur -->
+            <!-- Affichage du profil de l'utilisateur -->
             <div class="member__profile">
                 <div class="member__profile__image">
                     <img :src="this.$store.state.selectedUser.imageUrl" alt="image du profil">
@@ -50,8 +50,7 @@
                 <button @click="deleteUser()" class="delete-btn delete-user" v-if="this.$store.state.connectedUser != null && (this.$store.state.connectedUser.id == this.$store.state.selectedUser.id || this.$store.state.connectedUser.isAdmin == true)" title="Supprimer le compte utilisateur"><i class="far fa-trash-alt"></i></button>   
             </div>
 
-            <!-- Affichage des publications utilisateur -->
-            
+            <!-- Affichage des publications de l'utilisateur -->
             <PublicationBloc v-for="publication in showSelectedUserPublications" :key="publication.id" :publication="publication"/>
             
         </section>

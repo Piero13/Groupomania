@@ -45,6 +45,7 @@
                         <input type="password" placeholder="Confirmer mot de passe" v-model="confirmPassword" id="pi__password__confirm" required>
                     </div>
 
+                    <!-- Bouton de validation des modifications -->
                     <div class="pi__save">
                         <button type="submit" class="form__btn profile__btn">Enregistrer</button>
                     </div>

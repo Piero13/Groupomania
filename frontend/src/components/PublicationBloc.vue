@@ -29,7 +29,7 @@
 
             <!-- Ajout & affichage des commentaires -->
             <div class="publication__comments">
-                <!-- Champ pou rajout de commentaires -->
+                <!-- Champ pour ajout de commentaires -->
                 <div class="publication__comments__new">
                     <form @submit.prevent="createComment(publication.id)">
                         <textarea type="text" class="new__comment__input" placeholder="Commenter..." v-model="commentContent" aria-label="Commenter la publication" required></textarea>
@@ -329,6 +329,7 @@ section {
         &__owner {
             padding: 15px;
         }
+
         & .po__publication__text {
             padding-right: 20px;
         }
@@ -337,6 +338,7 @@ section {
             &__image {
                 margin-right: 10px;
             }
+
             &__text {
                 font-size: 16px;
             }

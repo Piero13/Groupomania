@@ -82,7 +82,7 @@ export default {
             } else {
                 formData.append("userId", this.$store.state.userId);
                 formData.append("content", this.content);
-                // Si la publication conitent une image
+                // Si la publication contient une image
                 if(this.imageFile) {
                     formData.append("image", this.imageFile);
                 }

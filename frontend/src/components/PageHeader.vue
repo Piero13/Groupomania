@@ -1,8 +1,10 @@
 <template>
 
 <header id="header" class="header">
+    <!-- Logo et nom entreprise -->
     <h1 class="header__title"><img src="../assets/icon-left-font-monochrome-white.png" alt="Logo Groupomania Blanc" class="header__logo"></h1>
     
+    <!-- Menu de navigation -->
     <nav class="header__nav">
         <div class="header__nav__image"><img :src="this.user.imageUrl" alt="photo de profil"></div>
 
