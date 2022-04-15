@@ -94,6 +94,9 @@ export default {
                 })
                     .then(() => {
                         this.getPublications();
+                        this.imageFile = null;
+                        this.content = null;
+                        this.imagePreview = null;
                     })
                     .catch((error) => {
                         console.log(error);
