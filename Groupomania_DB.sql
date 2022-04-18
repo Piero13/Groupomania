@@ -121,7 +121,7 @@ CREATE TABLE `users` (
   `lastname` varchar(255) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `imageUrl` varchar(255) NOT NULL DEFAULT 'http://localhost:3000/images/image_profil_defaut.jpg',
-  `email` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `description` text,
   `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
