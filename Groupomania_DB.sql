@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `groupomania` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `groupomania`;
 -- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
 -- Host: localhost    Database: groupomania
@@ -45,7 +43,6 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (76,'On vous attend pour vos premières publications :)',11,10,'2022-04-12 07:02:35','2022-04-12 07:02:35');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +71,7 @@ CREATE TABLE `likes` (
 
 LOCK TABLES `likes` WRITE;
 /*!40000 ALTER TABLE `likes` DISABLE KEYS */;
-INSERT INTO `likes` VALUES (6,9,1),(11,9,-1),(11,10,1),(23,9,1),(23,10,1);
+INSERT INTO `likes` VALUES (11,12,1),(11,13,1),(24,12,1),(24,13,1);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +93,7 @@ CREATE TABLE `publications` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   CONSTRAINT `publications_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +102,7 @@ CREATE TABLE `publications` (
 
 LOCK TABLES `publications` WRITE;
 /*!40000 ALTER TABLE `publications` DISABLE KEYS */;
-INSERT INTO `publications` VALUES (9,'Jeu d\'échecs en bois 100% fait main','http://localhost:3000/images/Jeu_d\'échecs_v2_(6)1649194191760.jpg','2022-04-05 21:29:51',2,1,6),(10,'Notre réseau social est ouvert!!!!!','http://localhost:3000/images/téléchargement1649232438731.jpg','2022-04-06 08:07:18',2,0,11);
+INSERT INTO `publications` VALUES (12,'test','http://localhost:3000/images/orange-3d-html5-icon-vector-366305441650306564480.jpg','2022-04-18 18:29:24',2,0,6),(13,'On a tous connu un jour ce sentiment en tant que développeur :))','http://localhost:3000/images/humour_dev1650309535784.png','2022-04-18 19:18:55',2,0,24);
 /*!40000 ALTER TABLE `publications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,12 +118,13 @@ CREATE TABLE `users` (
   `lastname` varchar(255) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `imageUrl` varchar(255) NOT NULL DEFAULT 'http://localhost:3000/images/image_profil_defaut.jpg',
-  `email` varchar(255) NOT NULL UNIQUE,
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `description` text,
   `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,7 +133,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (6,'Fasce','Pierre','http://localhost:3000/images/moi1647772185863.jpg','mon-email@gmail.com','$2b$10$mp7wIUNUkSe66dn.hBk0Y.kGd/14Hau5LCkLw1xqy9xiWONRwjQUS','La description de mon profil',0),(11,'Groupomania','Admin','http://localhost:3000/images/icon1648140390617.png','Groupomania@gmail.com','$2b$10$TCvirya5x1dtpFkZmiBawOr7LMQ4kd57lziRiuvimyethpbcfu4ce','Profil administrateur',1),(23,'Alphabeth','Anne','http://localhost:3000/images/IMG_20200916_1913061649275698544.jpg','annealphabeth@gmail.com','$2b$10$Y47I/j/iI0sAu6//KJ1k1.uScNCbYi8./njevWVJ1YrWGNNo.rpIG',NULL,0);
+INSERT INTO `users` VALUES (6,'Fasce','Pierre','http://localhost:3000/images/moi1647772185863.jpg','mon-email@gmail.com','$2b$10$mp7wIUNUkSe66dn.hBk0Y.kGd/14Hau5LCkLw1xqy9xiWONRwjQUS','La description de mon profil',0),(11,'Groupomania','Admin','http://localhost:3000/images/icon1648140390617.png','Groupomania@gmail.com','$2b$10$TCvirya5x1dtpFkZmiBawOr7LMQ4kd57lziRiuvimyethpbcfu4ce','Profil administrateur',1),(24,'Alphabeth','Anne','http://localhost:3000/images/IMG_20200916_1913061650309461857.jpg','annealphabeth@gmail.com','$2b$10$YPBOhhxRKHa5FwMS/MIVp.oqFIuxvKKzOmy0gNivxE.7C.6OV92.m',NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -148,4 +146,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-14 10:11:50
+-- Dump completed on 2022-04-18 23:45:00
