@@ -3,7 +3,7 @@
         <article class="publication" >
             <!-- Image de la publication -->
             <div class="publication__image" v-if="publication.imageUrl">
-                <img :src="publication.imageUrl" alt="image de démo">
+                <img :src="publication.imageUrl" alt="image de publication">
             </div>
 
             <!-- Détails et infos sur la publication -->
