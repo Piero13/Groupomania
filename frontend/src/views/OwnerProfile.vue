@@ -69,9 +69,9 @@
 
 import PageHeader from "../components/PageHeader.vue";
 import PageFooter from "../components/PageFooter.vue";
-import router from '../router'
+import router from '../router';
 import axios from 'axios';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 export default {
     data() {
@@ -202,7 +202,7 @@ export default {
             console.log(err)
         });
 
-        this.$store.dispatch("getOneUser");
+        this.$store.dispatch("auth")
     }
 }
 </script>

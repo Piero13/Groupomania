@@ -116,6 +116,7 @@ export default {
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("selectedUser", res.data.userId)
                 this.$store.dispatch("getUserId", res.data.userId);
+                this.$store.state.connectedUser = res.data.userId
                 this.email = this.password = null;
                 this.$router.push("/home")
             })
@@ -158,7 +159,7 @@ export default {
                 });
             }
         }
-    }
+    },
 }
 </script>
 

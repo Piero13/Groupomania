@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { createStore } from 'vuex'
-import router from '../router'
+import { createStore } from 'vuex';
+import router from '../router';
+import Swal from 'sweetalert2';
 
 export default createStore({
 
@@ -105,6 +106,35 @@ export default createStore({
         .catch((error) => {
           console.log(error);
         });
-    }
+    },
+
+    auth() {
+      if(localStorage.length == 0) {
+        Swal.fire({
+          title: "Veuillez vous connecter",
+          icon: "error",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#32c068",
+        })
+        router.push("/");
+      } else {
+        const token = localStorage.getItem("token");
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace("-", "+").replace("_", "/");
+        const user = JSON.parse(window.atob(base64));
+        console.log(user)
+        console.log(this.state.userId)
+        if(user.userId != this.state.userId) {
+          Swal.fire({
+            title: "Veuillez vous connecter",
+            icon: "error",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#32c068",
+          })
+          localStorage.clear()
+          router.push("/")
+        }
+      }
+    },
   },
 })

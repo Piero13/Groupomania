@@ -191,6 +191,7 @@ export default {
         this.getPublications();
         this.searchUsers();
         this.getUsers();
+        this.$store.dispatch("auth")
     },
 
     beforeUpdate() {

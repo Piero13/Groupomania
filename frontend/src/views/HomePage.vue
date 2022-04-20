@@ -111,7 +111,8 @@ export default {
     },
 
     mounted() {
-        this.getPublications()
+        this.getPublications();
+        this.$store.dispatch("auth")
     }
 }
 </script>
