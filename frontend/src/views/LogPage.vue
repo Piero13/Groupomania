@@ -160,6 +160,10 @@ export default {
             }
         }
     },
+
+    beforeCreate() {
+        localStorage.clear()
+    }
 }
 </script>
 
